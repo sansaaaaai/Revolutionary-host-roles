@@ -12,7 +12,7 @@ namespace TownOfHost
 {
     public static class TemplateManager
     {
-        private static readonly string TEMPLATE_FILE_PATH = "./TOH_DATA/template.txt";
+        private static readonly string TEMPLATE_FILE_PATH = "./RHR_DATA/template.txt";
         private static Dictionary<string, Func<string>> _replaceDictionary = new()
         {
             ["RoomCode"] = () => InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId),
@@ -46,7 +46,7 @@ namespace TownOfHost
             {
                 try
                 {
-                    if (!Directory.Exists(@"TOH_DATA")) Directory.CreateDirectory(@"TOH_DATA");
+                    if (!Directory.Exists(@"RHR_DATA")) Directory.CreateDirectory(@"RHR_DATA");
                     if (File.Exists(@"./template.txt"))
                     {
                         File.Move(@"./template.txt", TEMPLATE_FILE_PATH);
@@ -78,7 +78,7 @@ namespace TownOfHost
                 if (tmp.Length > 1 && tmp[1] != "")
                 {
                     tags.Add(tmp[0]);
-                    if (tmp[0] == str) sendList.Add(tmp.Skip(1).Join(delimiter: ":").Replace("\\n", "\n"));
+                    if (tmp[0].ToLower() == str.ToLower()) sendList.Add(tmp.Skip(1).Join(delimiter: ":").Replace("\\n", "\n"));
                 }
             }
             if (sendList.Count == 0 && !noErr)

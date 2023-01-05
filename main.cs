@@ -1,36 +1,35 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
+using AmongUs.GameOptions;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.IL2CPP;
 using HarmonyLib;
 using UnhollowerRuntimeLib;
 using UnityEngine;
-using AmongUs.GameOptions;
 
 [assembly: AssemblyFileVersionAttribute(TownOfHost.Main.PluginVersion)]
 [assembly: AssemblyInformationalVersionAttribute(TownOfHost.Main.PluginVersion)]
 namespace TownOfHost
 {
-    [BepInPlugin(PluginGuid, "Town Of Host", PluginVersion)]
+    [BepInPlugin(PluginGuid, "RevolutionaryHostRoles", PluginVersion)]
     [BepInIncompatibility("jp.ykundesu.supernewroles")]
     [BepInProcess("Among Us.exe")]
     public class Main : BasePlugin
     {
         // == プログラム設定 / Program Config ==
         // modの名前 / Mod Name (Default: Town Of Host)
-        public static readonly string ModName = "Town Of Host";
+        public static readonly string ModName = "RevolutionaryHostRoles";
         // modの色 / Mod Color (Default: #00bfff)
-        public static readonly string ModColor = "#00bfff";
+        public static readonly string ModColor = "#00ff00";
         // 公開ルームを許可する / Allow Public Room (Default: true)
         public static readonly bool AllowPublicRoom = true;
         // フォークID / ForkId (Default: OriginalTOH)
-        public static readonly string ForkId = "OriginalTOH";
+        public static readonly string ForkId = "RHR";
         // Discordボタンを表示するか / Show Discord Button (Default: true)
-        public static readonly bool ShowDiscordButton = true;
+        public static readonly bool ShowDiscordButton = false;
         // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/W5ug6hXB9V)
         public static readonly string DiscordInviteUrl = "https://discord.gg/W5ug6hXB9V";
         // ==========
@@ -47,8 +46,8 @@ namespace TownOfHost
 
         // ==========
         //Sorry for many Japanese comments.
-        public const string PluginGuid = "com.emptybottle.townofhost";
-        public const string PluginVersion = "4.0.1";
+        public const string PluginGuid = "com.sansaaaai.revolutinoaryhostroles";
+        public const string PluginVersion = "4.0.2";
         public Harmony Harmony { get; } = new Harmony(PluginGuid);
         public static Version version = Version.Parse(PluginVersion);
         public static BepInEx.Logging.ManualLogSource Logger;
@@ -76,6 +75,7 @@ namespace TownOfHost
         public static ConfigEntry<string> WebhookURL { get; private set; }
         public static ConfigEntry<string> BetaBuildURL { get; private set; }
         public static ConfigEntry<float> LastKillCooldown { get; private set; }
+        public static ConfigEntry<float> LastShapeshifterCooldown { get; private set; }
         public static OptionBackupData RealOptionsData;
         public static Dictionary<byte, PlayerState> PlayerStates = new();
         public static Dictionary<byte, string> AllPlayerNames;
@@ -128,6 +128,9 @@ namespace TownOfHost
         public static bool IsChristmas = DateTime.Now.Month == 12 && DateTime.Now.Day is 24 or 25;
         public static bool IsInitialRelease = DateTime.Now.Month == 12 && DateTime.Now.Day is 4;
 
+        public static IEnumerable<PlayerControl> AllPlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null);
+        public static IEnumerable<PlayerControl> AllAlivePlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null && p.IsAlive());
+
         public static Main Instance;
 
         public override void Load()
@@ -141,14 +144,13 @@ namespace TownOfHost
             JapaneseRoleName = Config.Bind("Client Options", "Japanese Role Name", true);
             DebugKeyInput = Config.Bind("Authentication", "Debug Key", "");
 
-            Logger = BepInEx.Logging.Logger.CreateLogSource("TownOfHost");
+            Logger = BepInEx.Logging.Logger.CreateLogSource("Revolutionary-Host-Roles");
             TownOfHost.Logger.Enable();
             TownOfHost.Logger.Disable("NotifyRoles");
             TownOfHost.Logger.Disable("SendRPC");
             TownOfHost.Logger.Disable("ReceiveRPC");
             TownOfHost.Logger.Disable("SwitchSystem");
             TownOfHost.Logger.Disable("CustomRpcSender");
-            TownOfHost.Logger.Disable("SendChat");
             //TownOfHost.Logger.isDetail = true;
 
             // 認証関連-初期化
@@ -177,6 +179,7 @@ namespace TownOfHost
             BetaBuildURL = Config.Bind("Other", "BetaBuildURL", "");
             MessageWait = Config.Bind("Other", "MessageWait", 1);
             LastKillCooldown = Config.Bind("Other", "LastKillCooldown", (float)30);
+            LastShapeshifterCooldown = Config.Bind("Other", "LastShapeshifterCooldown", (float)30);
 
             NameColorManager.Begin();
             CustomWinnerHolder.Reset();
@@ -258,7 +261,7 @@ namespace TownOfHost
             catch (ArgumentException ex)
             {
                 TownOfHost.Logger.Error("エラー:Dictionaryの値の重複を検出しました", "LoadDictionary");
-                TownOfHost.Logger.Error(ex.Message, "LoadDictionary");
+                TownOfHost.Logger.Exception(ex, "LoadDictionary");
                 hasArgumentException = true;
                 ExceptionMessage = ex.Message;
                 ExceptionMessageIsShown = false;
@@ -381,7 +384,7 @@ namespace TownOfHost
     public enum SuffixModes
     {
         None = 0,
-        TOH,
+        RHR,
         Streaming,
         Recording,
         RoomHost,

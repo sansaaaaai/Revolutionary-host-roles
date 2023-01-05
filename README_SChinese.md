@@ -1,9 +1,5 @@
 # Town Of Host（房主小镇）
 
-[![TownOfHost-Title](./Images/TownOfHost-Title.png)](https://youtu.be/IGguGyq_F-c)
-
-<p align="center"><a href="https://github.com/tukasa0001/TownOfHost/releases/"><img src="https://badgen.net/github/release/tukasa0001/TownOfHost"></a></p>
-
 本自述文件由两个少年汉化组进行翻译，开发者们不对本自述文件进行支持。
 The developer group will not update this file and is not responsible for any delays in information.
 
@@ -12,7 +8,6 @@ The developer group will not update this file and is not responsible for any del
 
 该模组不隶属于我们之中或 Innersloth LLC，其中包含的内容未经 Innersloth LLC 认可或以其他方式赞助。 此处包含的部分材料是 Innersloth LLC 的财产。 © Innersloth LLC。
 
-[![Discord](./Images/TownOfHost-Discord.png)](https://discord.gg/W5ug6hXB9V)
 
 ## 资源
 

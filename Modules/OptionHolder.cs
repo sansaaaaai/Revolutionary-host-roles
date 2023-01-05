@@ -199,6 +199,8 @@ namespace TownOfHost
         //転落死
         public static OptionItem LadderDeath;
         public static OptionItem LadderDeathChance;
+        //エレキ構造変化
+        public static OptionItem AirShipVariableElectrical;
 
         // 通常モードでかくれんぼ
         public static bool IsStandardHAS => StandardHAS.GetBool() && CurrentGameMode == CustomGameMode.Standard;
@@ -230,7 +232,6 @@ namespace TownOfHost
         public static OptionItem GhostCanSeeDeathReason;
         public static OptionItem GhostIgnoreTasks;
         public static OptionItem CommsCamouflage;
-
         // プリセット対象外
         public static OptionItem NoGameEnd;
         public static OptionItem AutoDisplayLastResult;
@@ -239,7 +240,7 @@ namespace TownOfHost
         public static OptionItem ColorNameMode;
         public static OptionItem ChangeNameToRoleInfo;
         public static OptionItem RoleAssigningAlgorithm;
-
+        public static OptionItem KickNotRHRPlayer;
         public static readonly string[] suffixModes =
         {
             "SuffixMode.None",
@@ -611,6 +612,10 @@ namespace TownOfHost
                 .SetHeader(true);
             LadderDeathChance = StringOptionItem.Create(101110, "LadderDeathChance", rates[1..], 0, TabGroup.MainSettings, false).SetParent(LadderDeath);
 
+            //エレキ構造変化
+            AirShipVariableElectrical = BooleanOptionItem.Create(101600, "AirShipVariableElectrical", false, TabGroup.MainSettings, false)
+                .SetHeader(true);
+
             // 通常モードでかくれんぼ用
             StandardHAS = BooleanOptionItem.Create(100700, "StandardHAS", false, TabGroup.MainSettings, false)
                 .SetHeader(true)
@@ -655,6 +660,8 @@ namespace TownOfHost
                 .RegisterUpdateValueEvent(
                     (object obj, OptionItem.UpdateValueEventArgs args) => IRandom.SetInstanceById(args.CurrentValue)
                 );
+            KickNotRHRPlayer = BooleanOptionItem.Create(1_000_006, "KickNotRHRPlayer", false, TabGroup.MainSettings, false)
+                .SetGameMode(CustomGameMode.All);
 
             DebugModeManager.SetupCustomOption();
 

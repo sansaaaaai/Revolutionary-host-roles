@@ -1,29 +1,25 @@
-# Town Of Host
+# RevolutionaryHostRoles
+## この Mod について
+このMODは[TownOfHost](https://github.com/tukasa0001/TownOfHost)というMODを土台にして作った(以下Forkと呼びます)MODです。
+このMODで起こったバグをTownOfHostに報告するのは両者ご迷惑がかかりますのでやめてください。
 
-[English](https://github.com/tukasa0001/TownOfHost/blob/main/README-EN.md)
-
-[![TownOfHost-Title](./Images/TownOfHost-Title.png)](https://youtu.be/IGguGyq_F-c)
-
-<p align="center"><a href="https://github.com/tukasa0001/TownOfHost/releases/"><img src="https://badgen.net/github/release/tukasa0001/TownOfHost"></a></p>
+# 以下Fork元である"Town Of Host"のREADMEを変更したREADMEです。
 
 ## この Mod について
 
 この Mod は非公式のものであり、この Mod の開発に関して Among Us の開発元である"Innersloth"は一切関与していません。<br>
 この Mod の問題などに関して公式に問い合わせないでください。<br>
 
-[![Discord](./Images/TownOfHost-Discord.png)](https://discord.gg/W5ug6hXB9V)
-
 ## リリース
 
 AmongUsバージョン : **2022.12.14**
-**最新版は[こちら](https://github.com/tukasa0001/TownOfHost/releases/latest)**
+**Fork元のTownOfHostの最新版は[こちら](https://github.com/tukasa0001/TownOfHost/releases/latest)**
 
-過去バージョンは[こちら](https://github.com/tukasa0001/TownOfHost/releases)
 
 ## 特徴
 
 この Mod はホストのクライアントに導入するだけで動作し、他のクライアントの Mod の導入/未導入及び端末の種類に関係なく動作します。<br>
-また、カスタムサーバーを利用した Mod と違い、URL やファイル編集などによるサーバー追加も不要なため、ホスト以外のプレイヤーは Town Of Host を導入したホストの部屋に参加するだけで追加役職を楽しむことができます。<br>
+また、カスタムサーバーを利用した Mod と違い、URL やファイル編集などによるサーバー追加も不要なため、ホスト以外のプレイヤーはRevolutionaryHostRolesを導入したホストの部屋に参加するだけで追加役職を楽しむことができます。<br>
 
 しかし、以下の制限が発生することにご注意ください。<br>
 
@@ -101,17 +97,23 @@ AmongUsバージョン : **2022.12.14**
 ### テンプレート
 定型文を送信できる機能です。<br>
 `/template <タグ>`もしくは`/t <タグ>`で呼び出すことができます。<br>
-定型文を設定するにはAmongUs.exeと同じフォルダの`./TOH_DATA/template.txt`を編集します。<br>
+定型文を設定するにはAmongUs.exeと同じフォルダの`./RHR_DATA/template.txt`を編集します。<br>
 `タグ:内容`のようにコロンで区切って記載します。<br>
 また、`タグ:こんなふうに\n改行できます`のように文章中に`\n`を書くと改行できます。<br>
 
-#### ウェルカムメッセージ
-テンプレート機能でタグを「welcome」に設定するとプレイヤー参加時に自動で送信されます。<br>
+#### 特殊タグ
+シーンに合わせて自動で送信させることができる特殊タグが存在します。<br>
 例: `welcome:この部屋はTownOfHostを使用しています。`
+
+| タグ           | シーン           | 対象               |
+| -------------- | ---------------- | ------------------ |
+| welcome        | プレイヤー入室時 | 入室したプレイヤー |
+| OnMeeting      | 会議開始時       | 全員               |
+| OnFirstMeeting | 初回会議開始時   | 全員               |
 
 #### 変数展開
 `{{変数名}}`のように文章中に記載することで、呼び出し時に変数の中身を展開することができます。<br>
-例: `roomcode:この部屋はのルームコードは{{RoomCode}}です`
+例: `roomcode:この部屋のルームコードは{{RoomCode}}です`
 
 | 変数名               | 内容                       |
 | -------------------- | -------------------------- |
@@ -169,22 +171,22 @@ AmongUsバージョン : **2022.12.14**
 ### BAN機能
 ホストはゲーム中でも他プレイヤーの投票を必要とせずBANを行うことができます。<br>
 また、BANを行うとそのプレイヤーは以後あなたのホストする部屋に入室できなくなります。<br>
-BANされたプレイヤーは`./TOH_DATA/BanList.txt`に`フレンドコード,プレイヤー名`のように記録されており、該当の行を削除することでBANを解除することができます。<br>
+BANされたプレイヤーは`./RHR_DATA/BanList.txt`に`フレンドコード,プレイヤー名`のように記録されており、該当の行を削除することでBANを解除することができます。<br>
 フレンドでブロックした場合も自動的にBANを行います。<br>
 
 ### キック機能
 ホストはゲーム中でも他プレイヤーの投票を必要とせずキックを行うことができます。<br>
 
 ### 名前フィルター
-`./TOH_DATA/DenyName.txt`に禁止したい名前を記載することで、一致した名前のプレイヤーは自動的にキックされます。<br>
+`./RHR_DATA/DenyName.txt`に禁止したい名前を記載することで、一致した名前のプレイヤーは自動的にキックされます。<br>
 [正規表現](https://weblabo.oscasierra.net/tools/regex/)で指定することができ、1行ずつ順番に判定されます。<br>
 
 例:
 | 指定文字 | 一致する名前                                    | 備考                               |
 | -------- | ----------------------------------------------- | ---------------------------------- |
-| 部屋主   | `部屋主` `MOD部屋主` `部屋主TOH` `MOD部屋主TOH` | 一部に`部屋主`が含まれていれば一致 |
-| ^部屋主  | `部屋主MOD` `部屋主TOH` `部屋主TEST`            | 先頭に`部屋主`とついていれば一致   |
-| 部屋主$  | `MOD部屋主` `TOH部屋主` `TEST部屋主`            | 末尾に`部屋主`とついていれば一致   |
+| 部屋主   | `部屋主` `MOD部屋主` `部屋主RHR` `MOD部屋主RHR` | 一部に`部屋主`が含まれていれば一致 |
+| ^部屋主  | `部屋主MOD` `部屋主RHR` `部屋主TEST`            | 先頭に`部屋主`とついていれば一致   |
+| 部屋主$  | `MOD部屋主` `RHR部屋主` `TEST部屋主`            | 末尾に`部屋主`とついていれば一致   |
 | ^部屋主$ | `部屋主`                                        | `部屋主`に完全一致                 |
 
 ## 役職
@@ -256,6 +258,7 @@ GMはゲーム自体には何の影響も与えず、すべてのプレイヤー
 | -------------------------------------- |
 | インポスターキル時にフラッシュが見える |
 | 会議後に再度ターゲットを設定できる     |
+| 会議中、追跡対象の最終位置を表示する   |
 | マッドメイトを指名できる               |
 
 ### FireWorks/花火職人
@@ -949,6 +952,14 @@ Polus や The Airship のドアを開けるとその部屋の全てのドアが�
 | ハシゴから転落 |
 | ┗ 転落する確率 |
 
+### AirShipVariableElectrical/電気室の構造変化（エアシップ）
+
+毎ターン、電気室の扉の構造が変化します。<br>
+
+| 設定名                         |
+| ------------------------------ |
+| 電気室の構造変化（エアシップ） |
+
 ### HideAndSeek/かくれんぼモード
 
 制作・考案者 : 空き瓶/EmptyBottle<br>
@@ -1106,7 +1117,7 @@ Polus や The Airship のドアを開けるとその部屋の全てのドアが�
 
 有効化することで、ロビーコードを非表示にすることができます。
 
-コンフィグファイル(BepInEx\config\com.emptybottle.townofhost.cfg)の`Hide Game Code Name`を書き換えることによって、HideCodes を有効にしたときに好きな文字を表示させることができます。
+コンフィグファイル(BepInEx\config\com.sansaaaai.revolutinoaryhostroles.cfg)の`Hide Game Code Name`を書き換えることによって、HideCodes を有効にしたときに好きな文字を表示させることができます。
 また、`Hide Game Code Color`を書き換えることによって文字の色も好きなように変更できます。
 
 ## Force Japanese/強制日本語化
@@ -1131,7 +1142,7 @@ Polus や The Airship のドアを開けるとその部屋の全てのドアが�
 オプションタブのアイコン製作者 : 花海<br>
 Csv: Copyright (c) 2015 Steve Hansen [MIT License](https://raw.githubusercontent.com/stevehansen/csv/master/LICENSE)<br>
 
-## 開発者
+## TOH開発者様
 <!--
 開発者用チャンネルでの一番最初の発言が早い順に記載する。
 - [テンプレ](https://github.com/) ([Twitter](https://twitter.com/))
