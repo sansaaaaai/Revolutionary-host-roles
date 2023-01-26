@@ -147,6 +147,7 @@ namespace TownOfHost
             text = "";
             foreach (var title in translateMaps) text += $"{title.Key}:{title.Value[0].Replace("\n", "\\n").Replace("\r", "\\r")}\n";
             File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/template_English.dat", text);
+            text = "";
         }
     }
 }
