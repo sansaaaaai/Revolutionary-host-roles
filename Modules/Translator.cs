@@ -11,7 +11,7 @@ namespace TownOfHost
     public static class Translator
     {
         public static Dictionary<string, Dictionary<int, string>> translateMaps;
-        public const string LANGUAGE_FOLDER_NAME = "Language";
+        public const string LANGUAGE_FOLDER_NAME = "LanguageRHR";
         public static void Init()
         {
             Logger.Info("Language Dictionary Initialize...", "Translator");
