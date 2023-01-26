@@ -11,7 +11,7 @@ namespace TownOfHost
     public static class Translator
     {
         public static Dictionary<string, Dictionary<int, string>> translateMaps;
-        public const string LANGUAGE_FOLDER_NAME = "Language";
+        public const string LANGUAGE_FOLDER_NAME = "LanguageRHR";
         public static void Init()
         {
             Logger.Info("Language Dictionary Initialize...", "Translator");
@@ -147,6 +147,7 @@ namespace TownOfHost
             text = "";
             foreach (var title in translateMaps) text += $"{title.Key}:{title.Value[0].Replace("\n", "\\n").Replace("\r", "\\r")}\n";
             File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/template_English.dat", text);
+            text = "";
         }
     }
 }
