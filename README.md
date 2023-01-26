@@ -3,7 +3,7 @@
 このMODは[TownOfHost](https://github.com/tukasa0001/TownOfHost)というMODを土台にして作った(以下Forkと呼びます)MODです。
 このMODで起こったバグをTownOfHostに報告するのは両者ご迷惑がかかりますのでやめてください。
 
-# 以下Fork元である"Town Of Host"のREADMEを変更したREADMEです。
+# 以下Fork元である"TownOfHost"のREADMEを変更したREADMEです。
 
 ## この Mod について
 
@@ -1110,6 +1110,7 @@ Polus や The Airship のドアを開けるとその部屋の全てのドアが�
 | 死人のタスクを免除する               |
 | タスク勝利を無効化                   |
 | ゲーム設定を隠す                     |
+|RHR以外のMODを入れているプレイヤーを蹴る|
 
 #### クライアント設定
 
