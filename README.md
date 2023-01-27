@@ -2,6 +2,8 @@
 ## この Mod について
 このMODは[TownOfHost](https://github.com/tukasa0001/TownOfHost)というMODを土台にして作った(以下Forkと呼びます)MODです。
 このMODで起こったバグをTownOfHostに報告するのは両者ご迷惑がかかりますのでやめてください。
+## 変更点
+・ウォッチャーをニュートラル役職のタブから両陣営役職のタブに移動
 
 # 以下Fork元である"TownOfHost"のREADMEを変更したREADMEです。
 
