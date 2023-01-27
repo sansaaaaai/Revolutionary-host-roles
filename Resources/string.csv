@@ -585,3 +585,5 @@
 
 "WarningVersion","[Warning]have another mod in the house","[警告]別のMODが入っています"
 "KickNotRHRPlayer","Kick people who have mods other than RHR.","RHR以外のMODを入れている人を蹴る"
+
+"TabGroup.BothRoles","BothRoles","両陣営可能役職"

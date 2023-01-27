@@ -78,6 +78,9 @@ namespace TownOfHost
                     case TabGroup.Addons:
                         tabcolor = "#ff00ff";
                         break;
+                    case TabGroup.BothRoles:
+                        tabcolor = "#00ff7f";
+                        break;
                     default:
                         tabcolor = "#ffffff";
                         break;
@@ -184,6 +187,9 @@ namespace TownOfHost
                         break;
                     case TabGroup.Addons:
                         tabcolor = "#ff00ff";
+                        break;
+                    case TabGroup.BothRoles:
+                        tabcolor = "#00ff7f";
                         break;
                     default:
                         tabcolor = "#ffffff";
