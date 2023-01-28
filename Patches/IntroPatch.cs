@@ -172,18 +172,18 @@ namespace TownOfHost
 
             if (Input.GetKey(KeyCode.RightShift))
             {
-                __instance.TeamTitle.text = Main.ModName;
+                __instance.TeamTitle.text = "<size=60%>" + Main.ModName + "</size>";
                 __instance.ImpostorText.gameObject.SetActive(true);
-                __instance.ImpostorText.text = "https://github.com/tukasa0001/TownOfHost" +
+                __instance.ImpostorText.text = "https://github.com/sansaaaaai/Revolutionary-host-roles" +
                     "\r\nOut Now on Github";
-                __instance.TeamTitle.color = Color.cyan;
-                StartFadeIntro(__instance, Color.cyan, Color.yellow);
+                __instance.TeamTitle.color = Color.green;
+                StartFadeIntro(__instance, Color.green, Color.green);
             }
             if (Input.GetKey(KeyCode.RightControl))
             {
                 __instance.TeamTitle.text = "Discord Server";
                 __instance.ImpostorText.gameObject.SetActive(true);
-                __instance.ImpostorText.text = "https://discord.gg/v8SFfdebpz";
+                __instance.ImpostorText.text = "Discordサーバーなんかないよ";
                 __instance.TeamTitle.color = Color.magenta;
                 StartFadeIntro(__instance, Color.magenta, Color.magenta);
             }

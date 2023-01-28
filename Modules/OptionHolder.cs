@@ -232,7 +232,6 @@ namespace TownOfHost
         public static OptionItem GhostCanSeeDeathReason;
         public static OptionItem GhostIgnoreTasks;
         public static OptionItem CommsCamouflage;
-
         // プリセット対象外
         public static OptionItem NoGameEnd;
         public static OptionItem AutoDisplayLastResult;
@@ -241,7 +240,7 @@ namespace TownOfHost
         public static OptionItem ColorNameMode;
         public static OptionItem ChangeNameToRoleInfo;
         public static OptionItem RoleAssigningAlgorithm;
-
+        public static OptionItem KickNotRHRPlayer;
         public static readonly string[] suffixModes =
         {
             "SuffixMode.None",
@@ -384,8 +383,8 @@ namespace TownOfHost
             MadmateVentMaxTime = FloatOptionItem.Create(15214, "MadmateVentMaxTime", new(0f, 180f, 5f), 0f, TabGroup.ImpostorRoles, false)
                 .SetValueFormat(OptionFormat.Seconds);
             // Both
-            SetupRoleOptions(30000, TabGroup.NeutralRoles, CustomRoles.Watcher);
-            EvilWatcherChance = IntegerOptionItem.Create(30010, "EvilWatcherChance", new(0, 100, 10), 0, TabGroup.NeutralRoles, false).SetParent(CustomRoleSpawnChances[CustomRoles.Watcher])
+            SetupRoleOptions(30000, TabGroup.BothRoles, CustomRoles.Watcher);
+            EvilWatcherChance = IntegerOptionItem.Create(30010, "EvilWatcherChance", new(0, 100, 10), 0, TabGroup.BothRoles, false).SetParent(CustomRoleSpawnChances[CustomRoles.Watcher])
                 .SetValueFormat(OptionFormat.Percent);
             // Crewmate
             SetupRoleOptions(20000, TabGroup.CrewmateRoles, CustomRoles.Bait);
@@ -661,6 +660,8 @@ namespace TownOfHost
                 .RegisterUpdateValueEvent(
                     (object obj, OptionItem.UpdateValueEventArgs args) => IRandom.SetInstanceById(args.CurrentValue)
                 );
+            KickNotRHRPlayer = BooleanOptionItem.Create(1_000_006, "KickNotRHRPlayer", false, TabGroup.MainSettings, false)
+                .SetGameMode(CustomGameMode.All);
 
             DebugModeManager.SetupCustomOption();
 

@@ -36,7 +36,7 @@ namespace TownOfHost
         {
             Main.credentialsText = $"\r\n<color={Main.ModColor}>{Main.ModName}</color> v{Main.PluginVersion}";
 #if DEBUG
-            Main.credentialsText += $"\r\n<color={Main.ModColor}>{ThisAssembly.Git.Branch}({ThisAssembly.Git.Commit})</color>";
+            //Main.credentialsText += $"\r\n<color={Main.ModColor}>{ThisAssembly.Git.Branch}({ThisAssembly.Git.Commit})</color>";
 #endif
             var credentials = Object.Instantiate(__instance.text);
             credentials.text = Main.credentialsText;
@@ -91,7 +91,7 @@ namespace TownOfHost
             tohLogo.transform.position = Vector3.up;
             tohLogo.transform.localScale *= 1.2f;
             var renderer = tohLogo.AddComponent<SpriteRenderer>();
-            renderer.sprite = Utils.LoadSprite("TownOfHost.Resources.TownOfHost-Logo.png", 300f);
+            renderer.sprite = Utils.LoadSprite("TownOfHost.Resources.RHRlogo.png", 300f);
         }
     }
     [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]

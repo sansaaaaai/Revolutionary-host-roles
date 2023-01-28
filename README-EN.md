@@ -1,17 +1,11 @@
 # Town Of Host
 
-[![TownOfHost-Title](./Images/TownOfHost-Title.png)](https://youtu.be/IGguGyq_F-c)
-
-<p align="center"><a href="https://github.com/tukasa0001/TownOfHost/releases/"><img src="https://badgen.net/github/release/tukasa0001/TownOfHost"></a></p>
-
 この README は英語版です。<br>
 ! We are not good at English, so if you have difficulty in making out the translation, please translate the Japanese README into English. !<br>
 
 ## Regarding this mod
 
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.
-
-[![Discord](./Images/TownOfHost-Discord.png)](https://discord.gg/W5ug6hXB9V)
 
 ## Releases
 
@@ -102,7 +96,7 @@ You can execute chat commands by typing in chat.
 ### Template
 This function allows you to send prepared messages.<br>
 Execute by typing `/template <tag>` or `/t <tag>`.<br>
-To set the text, edit `./TOH_DATA/template.txt` in the same folder as AmongUs.exe.<br>
+To set the text, edit `./RHR_DATA/template.txt` in the same folder as AmongUs.exe.<br>
 Separate each entry with a colon, such as `tag:content`.<br>
 Also, you can break lines by writing `\n` in the sentence like `tag:line breaks can be\nmade like this`.<br>
 
@@ -176,22 +170,22 @@ You can also reload the translation by pressing key `T`+`F5`.
 ### BAN Function
 The host can ban players even during the game without requiring other players to vote. <br>
 Also, if you ban, that player will not be able to enter the room you host from now on. <br>
-Banned players are recorded in `./TOH_DATA/BanList.txt` as `friend code, player name`, and you can remove the ban by deleting the corresponding line. <br>
+Banned players are recorded in `./RHR_DATA/BanList.txt` as `friend code, player name`, and you can remove the ban by deleting the corresponding line. <br>
 Even if you block it with a friend list, it will automatically ban. <br>
 
 ### Kick Function
 The host can kick players during the game without requiring other players to vote. <br>
 
 ### Name Filter
-By listing the names you want to deny in `./TOH_DATA/DenyName.txt`, players with matching names will be automatically kicked. <br>
+By listing the names you want to deny in `./RHR_DATA/DenyName.txt`, players with matching names will be automatically kicked. <br>
 It can be specified by [regular expression](https://regex101.com/), and it will be judged line by line. <br>
 
 Example:
 | specified character | matching name                           | note                           |
 | ------------------- | --------------------------------------- | ------------------------------ |
-| Host                | `Host` `MODHost` `HostTOH` `MODHostTOH` | Matches if `Host' is included. |
-| ^Host               | `HostMOD` `HostTOH` `HostTEST`          | Match if prefixed with `Host`  |
-| Host$               | `MODHost` `TOHHost` `TESTHost`          | Match if postfixed with `Host` |
+| Host                | `Host` `MODHost` `HostRHR` `MODHostRHR` | Matches if `Host' is included. |
+| ^Host               | `HostMOD` `HostRHR` `HostTEST`          | Match if prefixed with `Host`  |
+| Host$               | `MODHost` `RHRHost` `TESTHost`          | Match if postfixed with `Host` |
 | ^Host$              | `Host`                                  | Exact match to `Host`          |
 
 ## Roles
@@ -1179,7 +1173,7 @@ Csv: Copyright (c) 2015 Steve Hansen [MIT License](https://raw.githubusercontent
 
 Translated with https://www.deepl.com<br>
 
-## Developers
+## TOH's 'Developers
 - [EmptyBottle](https://github.com/tukasa0001) ([Twitter](https://twitter.com/XenonBottle))
 - [Tanakarina](https://github.com/tanakanira0118) <!--([Twitter](https://twitter.com/))-->
 - [Shu-](https://github.com/shu-TownofHost) ([Twitter](https://twitter.com/Shu_kundayo))
