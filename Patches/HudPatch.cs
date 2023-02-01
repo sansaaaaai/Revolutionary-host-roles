@@ -94,6 +94,9 @@ namespace TownOfHost
                     case CustomRoles.EvilTracker:
                         EvilTracker.GetAbilityButtonText(__instance, player.PlayerId);
                         break;
+                    case CustomRoles.Reloader:
+                        __instance.AbilityButton.OverrideText($"{GetString("Reload")}");
+                        break;
                 }
 
                 //バウンティハンターのターゲットテキスト

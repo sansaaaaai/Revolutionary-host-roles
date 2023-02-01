@@ -22,6 +22,7 @@ namespace TownOfHost
         // == プログラム設定 / Program Config ==
         // modの名前 / Mod Name (Default: Town Of Host)
         public static readonly string ModName = "RevolutionaryHostRoles";
+        public static readonly string ModNameInAir = "Revolutionary Host Roles";
         // modの色 / Mod Color (Default: #00bfff)
         public static readonly string ModColor = "#00ff00";
         // 公開ルームを許可する / Allow Public Room (Default: true)
@@ -303,6 +304,7 @@ namespace TownOfHost
         Puppeteer,
         TimeThief,
         EvilTracker,
+        Reloader,
         //Madmate
         MadGuardian,
         Madmate,
