@@ -110,6 +110,11 @@ namespace TownOfHost.Modules
                 case CustomRoles.BountyHunter:
                     BountyHunter.ApplyGameOptions();
                     break;
+                case CustomRoles.Reloader:
+                    AURoleOptions.ShapeshifterCooldown = Reloader.ReloadCoolDown.GetFloat();
+                    AURoleOptions.ShapeshifterDuration = 1f;
+                    AURoleOptions.ShapeshifterLeaveSkin = false;
+                    break;
                 case CustomRoles.EvilWatcher:
                 case CustomRoles.NiceWatcher:
                     opt.SetBool(BoolOptionNames.AnonymousVotes, false);

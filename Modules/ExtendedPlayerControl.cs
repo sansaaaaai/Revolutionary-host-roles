@@ -166,17 +166,30 @@ namespace TownOfHost
             if (player == null) return;
             CustomRoles role = player.GetCustomRole();
             if (!player.CanUseKillButton()) return;
-            if (time >= 0f)
+
+            if (player.AmOwner)//ホストならそのままキルクールを変える
             {
-                Main.AllPlayerKillCooldown[player.PlayerId] = time * 2;
+                player.SetKillTimer(time);
             }
             else
             {
-                Main.AllPlayerKillCooldown[player.PlayerId] *= 2;
+                if (time >= 0f)
+                {
+                    if (player.AmOwner)
+                    {
+                        player.SetKillTimer(time);
+                    }
+
+                    Main.AllPlayerKillCooldown[player.PlayerId] = time * 2;
+                }
+                else
+                {
+                    Main.AllPlayerKillCooldown[player.PlayerId] *= 2;
+                }
+                player.SyncSettings();
+                player.RpcGuardAndKill();
+                player.ResetKillCooldown();
             }
-            player.SyncSettings();
-            player.RpcGuardAndKill();
-            player.ResetKillCooldown();
         }
         public static void RpcSpecificMurderPlayer(this PlayerControl killer, PlayerControl target = null)
         {

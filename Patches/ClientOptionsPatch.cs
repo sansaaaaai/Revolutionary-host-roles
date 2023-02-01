@@ -10,6 +10,7 @@ namespace TownOfHost
         private static Vector3? origin;
         private static ToggleButtonBehaviour ForceJapanese;
         private static ToggleButtonBehaviour JapaneseRoleName;
+        private static ToggleButtonBehaviour ChangeRoleButtonImage;
         public static float xOffset = 1.75f;
         public static float yOffset = -0.25f;
         private static void UpdateToggle(ToggleButtonBehaviour button, string text, bool on)
@@ -18,7 +19,7 @@ namespace TownOfHost
 
             Color color = on ? new Color(0f, 1f, 0.16470589f, 1f) : Color.white;
             button.Background.color = color;
-            button.Text.text = $"{text}{(on ? "On" : "Off")}";
+            button.Text.text = $"{text}{Translator.GetString(on ? "On" : "Off")}";
             if (button.Rollover) button.Rollover.ChangeOutColor(color);
         }
         private static ToggleButtonBehaviour CreateCustomToggle(string text, bool on, Vector3 offset, UnityEngine.Events.UnityAction onClick, OptionsMenuBehaviour __instance)
@@ -80,6 +81,16 @@ namespace TownOfHost
                 {
                     Main.JapaneseRoleName.Value = !Main.JapaneseRoleName.Value;
                     UpdateToggle(JapaneseRoleName, "Japanese Role Name: ", Main.JapaneseRoleName.Value);
+                }
+            }
+            if (ChangeRoleButtonImage == null || ChangeRoleButtonImage?.gameObject == null)
+            {
+                ChangeRoleButtonImage = CreateCustomToggle(Translator.GetString("ChangeButtonImage:"), Main.ChangeRoleButtonImage.Value, new Vector3(-0.375f, yOffset - 0.3f, 0), (UnityEngine.Events.UnityAction)ChangeRoleButtonImageButtonToggle, __instance);
+
+                void ChangeRoleButtonImageButtonToggle()
+                {
+                    Main.ChangeRoleButtonImage.Value = !Main.ChangeRoleButtonImage.Value;
+                    UpdateToggle(ChangeRoleButtonImage, Translator.GetString("ChangeButtonImage:"), Main.ChangeRoleButtonImage.Value);
                 }
             }
         }
