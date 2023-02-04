@@ -2,6 +2,7 @@ using System;
 using AmongUs.GameOptions;
 using HarmonyLib;
 using UnhollowerBaseLib;
+using Unity.Services.Core.Internal;
 using UnityEngine;
 using static TownOfHost.Translator;
 
@@ -94,6 +95,22 @@ namespace TownOfHost
                     case CustomRoles.EvilTracker:
                         EvilTracker.GetAbilityButtonText(__instance, player.PlayerId);
                         break;
+                    case CustomRoles.Reloader:
+                        __instance.AbilityButton.OverrideText($"{GetString("Reload")}");
+                        //__instance.AbilityButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.ReloaderButton.png", 110f);
+                        break;
+                    case CustomRoles.Sheriff:
+                        if (Main.ChangeRoleButtonImage.Value)
+                        __instance.KillButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.SheriffKillButton.png", 110f);
+                        break;
+                    case CustomRoles.Mayor:
+                        if (Main.ChangeRoleButtonImage.Value)
+                            __instance.AbilityButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.MayorMeetingButtonButton.png", 110f);
+                        break;
+                        /*
+                    case CustomRoles.Doctor:
+                        if (Main.ChangeRoleButtonImage.Value) __instance.AbilityButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.DoctorVitalButton.png", 110f);
+                        break;*/
                 }
 
                 //バウンティハンターのターゲットテキスト

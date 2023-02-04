@@ -344,6 +344,9 @@ namespace TownOfHost
                 case CustomRoles.EvilTracker:
                     ProgressText += EvilTracker.GetMarker(playerId);
                     break;
+                case CustomRoles.Reloader:
+                    ProgressText += Reloader.SetMark(playerId);
+                    break;
                 default:
                     //タスクテキスト
                     var taskState = Main.PlayerStates?[playerId].GetTaskState();

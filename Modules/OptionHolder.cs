@@ -351,7 +351,7 @@ namespace TownOfHost
             Mare.SetupCustomOption();
             TimeThief.SetupCustomOption();
             EvilTracker.SetupCustomOption();
-
+            Reloader.SetupCustomOption();
             DefaultShapeshiftCooldown = FloatOptionItem.Create(5011, "DefaultShapeshiftCooldown", new(5f, 999f, 5f), 15f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds);
