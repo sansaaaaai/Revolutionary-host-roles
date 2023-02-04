@@ -587,3 +587,11 @@
 "KickNotRHRPlayer","Kick people who have mods other than RHR.","RHR以外のMODを入れている人を蹴る"
 
 "TabGroup.BothRoles","BothRoles","両陣営可能役職"
+"Reload","Reload","リロード"
+"Reloader","Reloader","リローダー"
+"ReloaderInfo","Let's reload and shoot!!","即座にリロードして発射しよう"
+"ReloaderInfoLong","(Impostors):\nReloaders can reload by shapeshifting\nReloading will set the kill cool to the set value.\nReloading can only be done a certain number of times.","(インポスター陣営):\nリローダーはシェイプシフトをすることでリロードすることができます\nリロードをするとキルクールが設定値になります。\nリロードは一定回数しかできません。"
+"AfterReloadKillCool","KillCooldown after reload","リロードした時のキルクール"
+"CanReloadCount","CanReloadCount","リロードできる回数"
+
+"ChangeButtonImage:","Change some of the button images for the roles:","置き換え役職のボタン画像を一部変更する:"

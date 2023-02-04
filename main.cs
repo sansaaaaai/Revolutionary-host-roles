@@ -22,6 +22,7 @@ namespace TownOfHost
         // == プログラム設定 / Program Config ==
         // modの名前 / Mod Name (Default: Town Of Host)
         public static readonly string ModName = "RevolutionaryHostRoles";
+        public static readonly string ModNameInAir = "Revolutionary Host Roles";
         // modの色 / Mod Color (Default: #00bfff)
         public static readonly string ModColor = "#00ff00";
         // 公開ルームを許可する / Allow Public Room (Default: true)
@@ -58,6 +59,8 @@ namespace TownOfHost
         public static NormalGameOptionsV07 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
         public static HideNSeekGameOptionsV07 HideNSeekSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
         //Client Options
+
+        public static ConfigEntry<bool> ChangeRoleButtonImage { get; private set; }
         public static ConfigEntry<string> HideName { get; private set; }
         public static ConfigEntry<string> HideColor { get; private set; }
         public static ConfigEntry<bool> ForceJapanese { get; private set; }
@@ -143,6 +146,7 @@ namespace TownOfHost
             ForceJapanese = Config.Bind("Client Options", "Force Japanese", false);
             JapaneseRoleName = Config.Bind("Client Options", "Japanese Role Name", true);
             DebugKeyInput = Config.Bind("Authentication", "Debug Key", "");
+            ChangeRoleButtonImage = Config.Bind("Client Options", "ChangeRoleButtonImage", false);
 
             Logger = BepInEx.Logging.Logger.CreateLogSource("Revolutionary-Host-Roles");
             TownOfHost.Logger.Enable();
@@ -303,6 +307,7 @@ namespace TownOfHost
         Puppeteer,
         TimeThief,
         EvilTracker,
+        Reloader,
         //Madmate
         MadGuardian,
         Madmate,
