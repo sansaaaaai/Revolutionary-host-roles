@@ -172,7 +172,7 @@ namespace TownOfHost
 
             if (Input.GetKey(KeyCode.RightShift))
             {
-                __instance.TeamTitle.text = "<size=60%>" + Main.ModName + "</size>";
+                __instance.TeamTitle.text = "<size=50%>" + Main.ModNameInAir + "</size>";
                 __instance.ImpostorText.gameObject.SetActive(true);
                 __instance.ImpostorText.text = "https://github.com/sansaaaaai/Revolutionary-host-roles" +
                     "\r\nOut Now on Github";

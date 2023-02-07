@@ -118,7 +118,8 @@ namespace TownOfHost
             {
                 CustomRoles.EvilTracker => EvilTracker.KillFlashCheck(killer, target),
                 CustomRoles.Seer => true,
-                _ => seer.Is(RoleType.Madmate) && Options.MadmateCanSeeKillFlash.GetBool(),
+                CustomRoles.JackalFellow => Options.JackalFellowSpecial.GetValue() == 3,
+                _ => (seer.Is(RoleType.Madmate) || seer.Is(CustomRoles.JMadmate)) && Options.MadmateCanSeeKillFlash.GetBool(),
             };
         }
         public static void KillFlash(this PlayerControl player)
@@ -189,13 +190,16 @@ namespace TownOfHost
             var mainRole = Main.PlayerStates[playerId].MainRole;
             var SubRoles = Main.PlayerStates[playerId].SubRoles;
             RoleText = GetRoleName(mainRole);
-            RoleColor = GetRoleColor(mainRole);
+            RoleColor = Utils.GetPlayerById(playerId).Is(CustomRoles.JMadmate) ? Color.red : GetRoleColor(mainRole);
             foreach (var subRole in Main.PlayerStates[playerId].SubRoles)
             {
                 switch (subRole)
                 {
                     case CustomRoles.LastImpostor:
                         RoleText = GetRoleString("Last-") + RoleText;
+                        break;
+                    case CustomRoles.JMadmate:
+                        RoleText = GetRoleString("Mad-") + RoleText;
                         break;
                 }
             }
@@ -282,6 +286,7 @@ namespace TownOfHost
                         break;
                     case CustomRoles.MadGuardian:
                     case CustomRoles.MadSnitch:
+                    case CustomRoles.JackalFellow:
                     case CustomRoles.Terrorist:
                         if (ForRecompute)
                             hasTasks = false;
@@ -303,6 +308,15 @@ namespace TownOfHost
                             //ラバーズがクルー陣営の場合タスクを付与しない
                             if (role.IsCrewmate())
                                 hasTasks = false;
+                            break;
+                        case CustomRoles.JMadmate:
+                            if (role != CustomRoles.Lighter && role != CustomRoles.Snitch)
+                                hasTasks = false;
+                            else
+                            {
+                                if (ForRecompute)
+                                    hasTasks = false;
+                            }
                             break;
                     }
             }
@@ -343,6 +357,9 @@ namespace TownOfHost
                     break;
                 case CustomRoles.EvilTracker:
                     ProgressText += EvilTracker.GetMarker(playerId);
+                    break;
+                case CustomRoles.Reloader:
+                    ProgressText += Reloader.SetMark(playerId);
                     break;
                 default:
                     //タスクテキスト
@@ -759,7 +776,12 @@ namespace TownOfHost
                         }
                     }
                 }
-
+                if (seer.Is(CustomRoles.Snitch))
+                {
+                    var TaskState = seer.GetPlayerTaskState();
+                    if (TaskState.IsTaskFinished)
+                        SeerKnowsImpostors = true;
+                }
                 if (seer.Is(CustomRoles.MadSnitch))
                 {
                     var TaskState = seer.GetPlayerTaskState();
@@ -798,6 +820,7 @@ namespace TownOfHost
                     || NameColorManager.Instance.GetDataBySeer(seer.PlayerId).Count > 0 //seer視点用の名前色データが一つ以上ある
                     || seer.Is(CustomRoles.Arsonist)
                     || seer.Is(CustomRoles.Lovers)
+                    || seer.Is(CustomRoles.JackalFellow)
                     || Witch.HaveSpelledPlayer()
                     || seer.Is(CustomRoles.Executioner)
                     || seer.Is(CustomRoles.Doctor) //seerがドクター
@@ -895,6 +918,8 @@ namespace TownOfHost
                         else if ((seer.Is(CustomRoles.EgoSchrodingerCat) && target.Is(CustomRoles.Egoist)) || //エゴ猫 --> エゴイスト
                                  (seer.Is(CustomRoles.JSchrodingerCat) && target.Is(CustomRoles.Jackal)) || // J猫 --> ジャッカル
                                  (seer.Is(CustomRoles.MSchrodingerCat) && target.Is(RoleType.Impostor))) // M猫 --> インポスター
+                            TargetPlayerName = ColorString(target.GetRoleColor(), TargetPlayerName);
+                        else if (seer.Is(CustomRoles.JackalFellow) && ((Options.JackalFellowSpecial.GetValue() == 0 && seer.GetPlayerTaskState().IsTaskFinished) || Options.JackalFellowCanSeeJackal.GetBool()) && target.Is(CustomRoles.Jackal))
                             TargetPlayerName = ColorString(target.GetRoleColor(), TargetPlayerName);
                         else if (Utils.IsActive(SystemTypes.Electrical) && target.Is(CustomRoles.Mare) && !isMeeting)
                             TargetPlayerName = ColorString(GetRoleColor(CustomRoles.Impostor), TargetPlayerName); //targetの赤色で表示

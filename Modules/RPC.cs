@@ -33,6 +33,7 @@ namespace TownOfHost
         SetCurrentDousingTarget,
         SetEvilTrackerTarget,
         SetRealKiller,
+        SetReloadCount
     }
     public enum Sounds
     {
@@ -198,6 +199,9 @@ namespace TownOfHost
                     byte killerId = reader.ReadByte();
                     RPC.SetRealKiller(targetId, killerId);
                     break;
+                case CustomRPC.SetReloadCount:
+                    Reloader.ReceiveRPC(reader);
+                    break;
             }
         }
     }
@@ -342,6 +346,9 @@ namespace TownOfHost
                     break;
                 case CustomRoles.LastImpostor:
                     LastImpostor.Add(targetId);
+                    break;
+                case CustomRoles.Reloader:
+                    Reloader.Add(targetId);
                     break;
             }
             HudManager.Instance.SetHudActive(true);

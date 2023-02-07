@@ -587,3 +587,22 @@
 "KickNotRHRPlayer","Kick people who have mods other than RHR.","RHR以外のMODを入れている人を蹴る"
 
 "TabGroup.BothRoles","BothRoles","両陣営可能役職"
+"Reload","Reload","リロード"
+"Reloader","Reloader","リローダー"
+"ReloaderInfo","Let's reload and shoot!!","即座にリロードして発射しよう"
+"ReloaderInfoLong","(Impostors):\nReloaders can reload by shapeshifting\nReloading will set the kill cool to the set value.\nReloading can only be done a certain number of times.","(インポスター陣営):\nリローダーはシェイプシフトをすることでリロードすることができます\nリロードをするとキルクールが設定値になります。\nリロードは一定回数しかできません。"
+"AfterReloadKillCool","KillCooldown after reload","リロードした時のキルクール"
+"CanReloadCount","CanReloadCount","リロードできる回数"
+
+"ChangeButtonImage:","Change some of the button images for the roles:","置き換え役職のボタン画像を一部変更する:"
+
+"VentCooldown","Vent Cooldown","ベントクールダウン"
+
+"JMadmate","Madmate","マッドメイト"
+"JMadmateInfo","Let's help Impostors","インポスターの手助けをしよう。"
+"JMadmateInfoLong","(Impostors):\nIt is an attribute of mad mate that is given to non-mayor in the crew mate.\n An additional win is awarded if the Imposter wins. However, it is not a win if the crew etc. win.\n【Role that change when you become a mad mate.】\n・Sheriff→If you try to cut someone, they will always self-destruct.\n・Bait→When Bait dies, have a randomly selected person report his/her corpse.","(インポスター陣営):\nクルーメイトのメイヤー以外に付与されるマッドメイトの属性です。\nインポスターが勝つことで追加勝利となります。ただしクルーなどが勝っても勝ちになりません。\n【マッドメイトになったときの仕様変更】\n・シェリフ→必ず誰を切っても自爆\n・ベイト→キルされた際ランダムの人にレポートさせる"
+"Mad-","Mad","マッド"
+
+"JackalFellow","Jackal Fellow","ジャッカルフェロー"
+"JackalFellowInfo","Help the Jackal","ジャッカルの手助けをしよう"
+"JackalFellowInfoLong","(Jackal):\nYou are a crewmate, but you act as the Jackal' ally.\nYou can vent, and you have a special and no tasks.","(ジャッカル陣営):\nクルーだがジャッカルの味方をします。\nベントが使え、一つだけ能力を持っており、タスクはない。"

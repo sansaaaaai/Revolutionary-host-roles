@@ -22,7 +22,8 @@ namespace TownOfHost
                 CustomRoles.Mafia or
                 CustomRoles.FireWorks or
                 CustomRoles.Sniper or
-                CustomRoles.EvilTracker;
+                CustomRoles.EvilTracker or
+                CustomRoles.Reloader;
         }
         public static bool IsMadmate(this CustomRoles role)
         {
@@ -31,7 +32,9 @@ namespace TownOfHost
                 CustomRoles.SKMadmate or
                 CustomRoles.MadGuardian or
                 CustomRoles.MadSnitch or
-                CustomRoles.MSchrodingerCat;
+                CustomRoles.MSchrodingerCat or
+                CustomRoles.JMadmate;
+
         }
         public static bool IsImpostorTeam(this CustomRoles role) => role.IsImpostor() || role.IsMadmate();
         public static bool IsNeutral(this CustomRoles role)
@@ -47,6 +50,7 @@ namespace TownOfHost
                 CustomRoles.EgoSchrodingerCat or
                 CustomRoles.Jackal or
                 CustomRoles.JSchrodingerCat or
+                CustomRoles.JackalFellow or
                 CustomRoles.HASTroll or
                 CustomRoles.HASFox;
         }

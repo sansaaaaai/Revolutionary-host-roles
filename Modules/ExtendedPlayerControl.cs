@@ -166,17 +166,30 @@ namespace TownOfHost
             if (player == null) return;
             CustomRoles role = player.GetCustomRole();
             if (!player.CanUseKillButton()) return;
-            if (time >= 0f)
+
+            if (player.AmOwner)//ホストならそのままキルクールを変える
             {
-                Main.AllPlayerKillCooldown[player.PlayerId] = time * 2;
+                player.SetKillTimer(time);
             }
             else
             {
-                Main.AllPlayerKillCooldown[player.PlayerId] *= 2;
+                if (time >= 0f)
+                {
+                    if (player.AmOwner)
+                    {
+                        player.SetKillTimer(time);
+                    }
+
+                    Main.AllPlayerKillCooldown[player.PlayerId] = time * 2;
+                }
+                else
+                {
+                    Main.AllPlayerKillCooldown[player.PlayerId] *= 2;
+                }
+                player.SyncSettings();
+                player.RpcGuardAndKill();
+                player.ResetKillCooldown();
             }
-            player.SyncSettings();
-            player.RpcGuardAndKill();
-            player.ResetKillCooldown();
         }
         public static void RpcSpecificMurderPlayer(this PlayerControl killer, PlayerControl target = null)
         {
@@ -517,7 +530,8 @@ namespace TownOfHost
         }
         public static bool KnowDeathReason(this PlayerControl seer, PlayerControl target)
             => (seer.Is(CustomRoles.Doctor)
-            || (seer.Is(RoleType.Madmate) && Options.MadmateCanSeeDeathReason.GetBool())
+            || ((seer.Is(RoleType.Madmate) || seer.Is(CustomRoles.JMadmate)) && Options.MadmateCanSeeDeathReason.GetBool())
+            || (seer.Is(CustomRoles.JackalFellow) && Options.JackalFellowSpecial.GetValue() == 2)
             || (seer.Data.IsDead && Options.GhostCanSeeDeathReason.GetBool()))
             && target.Data.IsDead;
         public static string GetRoleInfo(this PlayerControl player, bool InfoLong = false)
@@ -554,6 +568,10 @@ namespace TownOfHost
                     case CustomRoles.MadGuardian:
                         text = CustomRoles.Madmate.ToString();
                         Prefix = player.GetPlayerTaskState().IsTaskFinished ? "" : "Before";
+                        break;
+                    case CustomRoles.JackalFellow:
+                        text = CustomRoles.JackalFellow.ToString();
+                        Prefix = "";
                         break;
                 };
             return GetString($"{Prefix}{text}Info" + (InfoLong ? "Long" : ""));
