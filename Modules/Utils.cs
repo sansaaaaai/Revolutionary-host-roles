@@ -118,6 +118,7 @@ namespace TownOfHost
             {
                 CustomRoles.EvilTracker => EvilTracker.KillFlashCheck(killer, target),
                 CustomRoles.Seer => true,
+                CustomRoles.JackalFellow => Options.JackalFellowSpecial.GetValue() == 3,
                 _ => seer.Is(RoleType.Madmate) && Options.MadmateCanSeeKillFlash.GetBool(),
             };
         }
@@ -282,6 +283,7 @@ namespace TownOfHost
                         break;
                     case CustomRoles.MadGuardian:
                     case CustomRoles.MadSnitch:
+                    case CustomRoles.JackalFellow:
                     case CustomRoles.Terrorist:
                         if (ForRecompute)
                             hasTasks = false;
@@ -343,6 +345,9 @@ namespace TownOfHost
                     break;
                 case CustomRoles.EvilTracker:
                     ProgressText += EvilTracker.GetMarker(playerId);
+                    break;
+                case CustomRoles.Reloader:
+                    ProgressText += Reloader.SetMark(playerId);
                     break;
                 default:
                     //タスクテキスト
@@ -798,6 +803,7 @@ namespace TownOfHost
                     || NameColorManager.Instance.GetDataBySeer(seer.PlayerId).Count > 0 //seer視点用の名前色データが一つ以上ある
                     || seer.Is(CustomRoles.Arsonist)
                     || seer.Is(CustomRoles.Lovers)
+                    || seer.Is(CustomRoles.JackalFellow)
                     || Witch.HaveSpelledPlayer()
                     || seer.Is(CustomRoles.Executioner)
                     || seer.Is(CustomRoles.Doctor) //seerがドクター
@@ -895,6 +901,8 @@ namespace TownOfHost
                         else if ((seer.Is(CustomRoles.EgoSchrodingerCat) && target.Is(CustomRoles.Egoist)) || //エゴ猫 --> エゴイスト
                                  (seer.Is(CustomRoles.JSchrodingerCat) && target.Is(CustomRoles.Jackal)) || // J猫 --> ジャッカル
                                  (seer.Is(CustomRoles.MSchrodingerCat) && target.Is(RoleType.Impostor))) // M猫 --> インポスター
+                            TargetPlayerName = ColorString(target.GetRoleColor(), TargetPlayerName);
+                        else if (seer.Is(CustomRoles.JackalFellow) && ((Options.JackalFellowSpecial.GetValue() == 0 && seer.GetPlayerTaskState().IsTaskFinished) || Options.JackalFellowCanSeeJackal.GetBool()) && target.Is(CustomRoles.Jackal))
                             TargetPlayerName = ColorString(target.GetRoleColor(), TargetPlayerName);
                         else if (Utils.IsActive(SystemTypes.Electrical) && target.Is(CustomRoles.Mare) && !isMeeting)
                             TargetPlayerName = ColorString(GetRoleColor(CustomRoles.Impostor), TargetPlayerName); //targetの赤色で表示

@@ -271,6 +271,7 @@ namespace TownOfHost
                 { CustomRoles.Vampire, "va" },
                 { CustomRoles.Warlock, "wa" },
                 { CustomRoles.Witch, "wi" },
+                { CustomRoles.Reloader, "rel" },
                 //Madmate役職
                 { (CustomRoles)(-2), $"== {GetString("Madmate")} ==" }, //区切り用
                 { CustomRoles.MadGuardian, "mg" },
@@ -303,6 +304,7 @@ namespace TownOfHost
                 { CustomRoles.SchrodingerCat, "sc" },
                 { CustomRoles.Terrorist, "te" },
                 { CustomRoles.Jackal, "jac" },
+                { CustomRoles.JackalFellow, "jacf" },
                 //属性
                 { (CustomRoles)(-6), $"== {GetString("Addons")} ==" }, //区切り用
                 {CustomRoles.Lovers, "lo" },

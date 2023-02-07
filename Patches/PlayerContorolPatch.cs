@@ -350,7 +350,7 @@ namespace TownOfHost
             }
             if (shapeshifter.Is(CustomRoles.FireWorks)) FireWorks.ShapeShiftState(shapeshifter, shapeshifting);
             if (shapeshifter.Is(CustomRoles.Sniper)) Sniper.ShapeShiftCheck(shapeshifter, shapeshifting);
-
+            if (shapeshifter.Is(CustomRoles.Reloader) && shapeshifting) Reloader.UseShapeShift(shapeshifter);
             //変身解除のタイミングがずれて名前が直せなかった時のために強制書き換え
             if (!shapeshifting)
             {
@@ -761,6 +761,8 @@ namespace TownOfHost
                              (seer.Is(CustomRoles.JSchrodingerCat) && target.Is(CustomRoles.Jackal)) || //J猫 --> ジャッカル
                              (seer.Is(CustomRoles.MSchrodingerCat) && target.Is(RoleType.Impostor)) //M猫 --> インポスター
                     )
+                        RealName = Utils.ColorString(target.GetRoleColor(), RealName); //targetの名前をtargetの役職の色で表示
+                    else if (seer.Is(CustomRoles.JackalFellow) && ((Options.JackalFellowSpecial.GetValue() == 0 && seer.GetPlayerTaskState().IsTaskFinished) || Options.JackalFellowCanSeeJackal.GetBool()) && target.Is(CustomRoles.Jackal))
                         RealName = Utils.ColorString(target.GetRoleColor(), RealName); //targetの名前をtargetの役職の色で表示
                     else if (target.Is(CustomRoles.Mare) && Utils.IsActive(SystemTypes.Electrical))
                         RealName = Utils.ColorString(Utils.GetRoleColor(CustomRoles.Impostor), RealName); //targetの赤色で表示

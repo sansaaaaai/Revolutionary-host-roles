@@ -22,7 +22,8 @@ namespace TownOfHost
                 CustomRoles.Mafia or
                 CustomRoles.FireWorks or
                 CustomRoles.Sniper or
-                CustomRoles.EvilTracker;
+                CustomRoles.EvilTracker or
+                CustomRoles.Reloader;
         }
         public static bool IsMadmate(this CustomRoles role)
         {
@@ -47,6 +48,7 @@ namespace TownOfHost
                 CustomRoles.EgoSchrodingerCat or
                 CustomRoles.Jackal or
                 CustomRoles.JSchrodingerCat or
+                CustomRoles.JackalFellow or
                 CustomRoles.HASTroll or
                 CustomRoles.HASFox;
         }

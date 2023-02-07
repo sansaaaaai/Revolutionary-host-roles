@@ -215,6 +215,8 @@ namespace TownOfHost
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.Jackal);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackal);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JSchrodingerCat);
+                    CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalFellow);
+                    CustomWinnerHolder.AdditionalWinnerTeams.Add(AdditionalWinners.JackalFellow);
                 }
                 else if (Jackal == 0 && Imp + Ego == 0) //クルー勝利
                 {

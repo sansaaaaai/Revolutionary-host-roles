@@ -110,6 +110,16 @@ namespace TownOfHost.Modules
                 case CustomRoles.BountyHunter:
                     BountyHunter.ApplyGameOptions();
                     break;
+                case CustomRoles.JackalFellow:
+                    AURoleOptions.EngineerCooldown = Options.JackalFellowVentCooldown.GetFloat();
+                    Jackal.ApplyGameOptions(opt);
+                    opt.SetBool(BoolOptionNames.AnonymousVotes, Options.JackalFellowSpecial.GetValue() != 1);//falseで見える
+                    break;
+                case CustomRoles.Reloader:
+                    AURoleOptions.ShapeshifterCooldown = Reloader.ReloadCoolDown.GetFloat();
+                    AURoleOptions.ShapeshifterDuration = 1f;
+                    AURoleOptions.ShapeshifterLeaveSkin = false;
+                    break;
                 case CustomRoles.EvilWatcher:
                 case CustomRoles.NiceWatcher:
                     opt.SetBool(BoolOptionNames.AnonymousVotes, false);

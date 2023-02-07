@@ -414,6 +414,9 @@ namespace TownOfHost
                     case CustomRoles.JSchrodingerCat:
                         LocalPlayerKnowsJackal = true;
                         break;
+                    case CustomRoles.JackalFellow:
+                        LocalPlayerKnowsJackal = ((Options.JackalFellowSpecial.GetValue() == 0 && seer.GetPlayerTaskState().IsTaskFinished) || Options.JackalFellowCanSeeJackal.GetBool());
+                        break;
                 }
 
                 switch (target.GetCustomRole())
