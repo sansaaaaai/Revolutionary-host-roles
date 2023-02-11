@@ -36,6 +36,15 @@ namespace TownOfHost
                         if (Options.FixFirstKillCooldown.GetBool() && !MeetingStates.MeetingCalled) player.SetKillCooldown(Main.AllPlayerKillCooldown[player.PlayerId]);
                         if (!Options.RandomSpawn.GetBool()) return; //ランダムスポーンが無効ならreturn
                         new AirshipSpawnMap().RandomTeleport(player);
+                        if (player.Is(CustomRoles.AntiTeleporter))
+                        {
+                            Logger.Info($"{player.Data.PlayerName}のわくまえの座標:{AntiTeleporter.LastPlace[player.PlayerId].x},{AntiTeleporter.LastPlace[player.PlayerId].y}", "AntiTeleporter");
+                            Vector2 v = new(1, 1);
+                            if (AntiTeleporter.LastPlace.TryGetValue(player.PlayerId, out Vector2 x) && x != v)
+                                TP(player.NetTransform, x);
+                            Logger.Info($"{player.Data.PlayerName}のわいた後の座標:{player.transform.position.x},{player.transform.position.y}", "AntiTeleporter");
+                        }
+
                     }
                 }
             }

@@ -608,3 +608,7 @@
 "JackalFellowInfoLong","(Jackal):\nYou are a crewmate, but you act as the Jackal' ally.\nYou can vent, and you have a special and no tasks.","(ジャッカル陣営):\nクルーだがジャッカルの味方をします。\nベントが使え、一つだけ能力を持っており、タスクはない。"
 "CanSeeJackal","CanSeeJackal","ジャッカルが見える"
 "JackalFellowSpecials","JackalFellow's Special","ジャッカルフェローの能力"
+
+"AntiTeleporter","AntiTeleporter","アンチテレポーター"
+"AntiTeleporterInfo","I don't want Teleport","絶対にテレポートしたくないでござる"
+"AntiTeleporterInfoLong","(Addons):\nThe Anti Teleport Modifier prevents the player from getting teleported to the Meeting Table if a body gets reported or an Emergency Meeting is called.\nThe player will start the round where the previous one ended (Emergency Meeting Call/Body Report).","(属性):\n会議や死体レポートなどが起こってもその後にテレポートせず、元居た場所からスタートします。"

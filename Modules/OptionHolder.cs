@@ -449,9 +449,10 @@ namespace TownOfHost
             Executioner.SetupCustomOption();
             Jackal.SetupCustomOption();
             SetupJackalFellowOptions(300100);
-            // Add-Ons
+            //Add-Ons
             LastImpostor.SetupCustomOption();
             SetupJMadmateOptions();
+            SetupRoleOptions(310500, TabGroup.Addons, CustomRoles.AntiTeleporter);
             #endregion
             KillFlashDuration = FloatOptionItem.Create(90000, "KillFlashDuration", new(0.1f, 0.45f, 0.05f), 0.3f, TabGroup.MainSettings, false)
                 .SetHeader(true)

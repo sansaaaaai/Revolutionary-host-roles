@@ -310,6 +310,7 @@ namespace TownOfHost
 
                 {CustomRoles.Lovers, "lo" },
                 {CustomRoles.JMadmate, "jmm" },
+                {CustomRoles.AntiTeleporter, "at" },
                 //HAS
                 { (CustomRoles)(-7), $"== {GetString("HideAndSeek")} ==" }, //区切り用
                 { CustomRoles.HASFox, "hfo" },

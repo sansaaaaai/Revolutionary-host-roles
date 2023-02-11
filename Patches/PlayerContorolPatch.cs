@@ -455,7 +455,17 @@ namespace TownOfHost
             //=============================================
             //以下、ボタンが押されることが確定したものとする。
             //=============================================
-
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            {
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    if (p.Is(CustomRoles.AntiTeleporter))
+                    {
+                        Vector2 v = new(p.transform.position.x, p.transform.position.y);
+                        AntiTeleporter.LastPlace[p.PlayerId] = v;
+                    }
+                }
+            }
 
             Main.AllPlayerControls
                 .Where(pc => Main.CheckShapeshift.ContainsKey(pc.PlayerId))

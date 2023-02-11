@@ -116,6 +116,7 @@ namespace TownOfHost
             EvilTracker.Init();
             LastImpostor.Init();
             Reloader.Init();
+            AntiTeleporter.Init();
             CustomWinnerHolder.Reset();
             AntiBlackout.Reset();
             IRandom.SetInstanceById(Options.RoleAssigningAlgorithm.GetValue());
@@ -318,6 +319,11 @@ namespace TownOfHost
                 AssignCustomRolesFromList(CustomRoles.JackalFellow, Engineers);
                 //必ずAssignJMadmateRoles()を後ろにおいてください
                 if (CustomRoles.JMadmate.IsEnable()) AssignJMadmateRoles();
+                foreach (CustomRoles role in CustomRolesHelper.AllSubRoles())
+                {
+                    if (role.IsEnable())
+                    AssignAddonsRoles(role);
+                }
                 //RPCによる同期
                 foreach (var pc in Main.AllPlayerControls)
                 {
@@ -603,6 +609,29 @@ namespace TownOfHost
                 allPlayers.Remove(player);
                 Main.PlayerStates[player.PlayerId].SetSubRole(Role);
                 Logger.Info("役職設定:" + player?.Data?.PlayerName + " = " + player.GetCustomRole().ToString() + " + " + Role.ToString(), "AssignJMadmate");
+            }
+        }
+        private static void AssignAddonsRoles(CustomRoles role = CustomRoles.AntiTeleporter)
+        {
+            int RawCount = role.GetCount();
+            var allPlayers = new List<PlayerControl>();
+            foreach (var player in Main.AllPlayerControls)
+            {
+                if (player.Is(CustomRoles.GM)) continue;
+                allPlayers.Add(player);
+            }
+            var Role = role;
+            var rand = IRandom.Instance;
+            var count = Math.Clamp(RawCount, 0, allPlayers.Count);
+            if (RawCount == -1) count = Math.Clamp(RawCount, 0, allPlayers.Count);
+            if (count <= 0) return;
+
+            for (var i = 0; i < count; i++)
+            {
+                var player = allPlayers[rand.Next(0, allPlayers.Count)];
+                allPlayers.Remove(player);
+                player.RpcSetCustomRole(Role);
+                Logger.Info("役職設定:" + player?.Data?.PlayerName + " = " + player.GetCustomRole().ToString() + " + " + Role.ToString(), $"Assign{role.ToString()}");
             }
         }
 
