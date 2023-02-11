@@ -95,6 +95,7 @@ namespace TownOfHost
         public static bool isChatCommand = false;
         public static List<PlayerControl> LoversPlayers = new();
         public static bool isLoversDead = true;
+        public static List<PlayerControl> Addons = new();
         public static Dictionary<byte, float> AllPlayerKillCooldown = new();
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace TownOfHost
             Translator.Init();
             BanManager.Init();
             TemplateManager.Init();
-
+            
             IRandom.SetInstance(new NetRandomWrapper());
 
             hasArgumentException = false;
@@ -245,7 +246,7 @@ namespace TownOfHost
                     //サブ役職
                     {CustomRoles.LastImpostor, "#ff0000"},
                     {CustomRoles.Lovers, "#ff6be4"},
-
+                    {CustomRoles.AntiTeleporter, "#ff0000"},
                     {CustomRoles.NotAssigned, "#ffffff"}
                 };
                 foreach (var role in Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>())
@@ -354,9 +355,10 @@ namespace TownOfHost
         GM,
         // Sub-roll after 500
         NotAssigned = 500,
-        LastImpostor,
-        Lovers,
-        JMadmate,//重複マッドメイト
+        LastImpostor = 501,
+        Lovers = 502,
+        JMadmate = 503,//重複マッドメイト
+        AntiTeleporter
     }
     //WinData
     public enum CustomWinner

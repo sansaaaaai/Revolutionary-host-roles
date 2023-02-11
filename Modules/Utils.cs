@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AmongUs.Data;
 using AmongUs.GameOptions;
+using Sentry.Internal;
 using TownOfHost.Modules;
 using UnhollowerBaseLib;
 using UnityEngine;
@@ -201,6 +202,9 @@ namespace TownOfHost
                     case CustomRoles.JMadmate:
                         RoleText = GetRoleString("Mad-") + RoleText;
                         break;
+                    case CustomRoles.AntiTeleporter:
+                        RoleText =  RoleText + ColorString(GetRoleColor(CustomRoles.AntiTeleporter), "+" + GetRoleString("AntiTeleporter"));
+                        break;
                 }
             }
             return (RoleText, RoleColor);
@@ -343,6 +347,7 @@ namespace TownOfHost
             if (!Main.playerVersion.ContainsKey(0)) return ""; //ホストがMODを入れていなければ未記入を返す
             string ProgressText = "";
             var role = Main.PlayerStates[playerId].MainRole;
+            var subrole = Main.PlayerStates[playerId].SubRoles;
             switch (role)
             {
                 case CustomRoles.Arsonist:
@@ -377,6 +382,7 @@ namespace TownOfHost
                     }
                     break;
             }
+
             if (GetPlayerById(playerId).CanMakeMadmate()) ProgressText += ColorString(Palette.ImpostorRed.ShadeColor(0.5f), $" [{Options.CanMakeMadmateCount.GetInt() - Main.SKMadmateNowCount}]");
 
             return ProgressText;
