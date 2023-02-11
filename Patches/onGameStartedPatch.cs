@@ -300,7 +300,6 @@ namespace TownOfHost
                 AssignCustomRolesFromList(CustomRoles.SerialKiller, Shapeshifters);
                 AssignCustomRolesFromList(CustomRoles.Lighter, Crewmates);
                 AssignLoversRolesFromList();
-                if (CustomRoles.JMadmate.IsEnable()) AssignJMadmateRoles();
                 AssignCustomRolesFromList(CustomRoles.SpeedBooster, Crewmates);
                 AssignCustomRolesFromList(CustomRoles.Trapper, Crewmates);
                 AssignCustomRolesFromList(CustomRoles.Dictator, Crewmates);
@@ -317,6 +316,8 @@ namespace TownOfHost
                 AssignCustomRolesFromList(CustomRoles.Seer, Crewmates);
                 AssignCustomRolesFromList(CustomRoles.Reloader, Shapeshifters);
                 AssignCustomRolesFromList(CustomRoles.JackalFellow, Engineers);
+                //必ずAssignJMadmateRoles()を後ろにおいてください
+                if (CustomRoles.JMadmate.IsEnable()) AssignJMadmateRoles();
                 //RPCによる同期
                 foreach (var pc in Main.AllPlayerControls)
                 {
@@ -587,7 +588,7 @@ namespace TownOfHost
             var allPlayers = new List<PlayerControl>();
             foreach (var player in Main.AllPlayerControls)
             {
-                if (player.Is(CustomRoles.GM) || player.Is(CustomRoles.Mayor) || !player.GetCustomRole().IsCrewmate()) continue;
+                if (player.Is(CustomRoles.GM) || player.Is(CustomRoles.Mayor) || player.GetCustomRole().IsNeutral() || player.Is(CustomRoles.JackalFellow) || player.GetCustomRole().IsImpostorTeam()) continue;
                 allPlayers.Add(player);
             }
             var Role = CustomRoles.JMadmate;

@@ -250,10 +250,10 @@ namespace TownOfHost
                     List<PlayerControl> allplayers = new();
                     foreach (PlayerControl p in PlayerControl.AllPlayerControls)
                     {
-                        if (!p.Data.IsDead && p.Is(CustomRoles.GM) && p != target)
+                        if (!p.Data.IsDead && !p.Is(CustomRoles.GM) && p.PlayerId != target.PlayerId)
                             allplayers.Add(p);
                     }
-                    var Reporter = allplayers[UnityEngine.Random.RandomRangeInt(0, allplayers.Count)];
+                    var Reporter = allplayers[UnityEngine.Random.RandomRangeInt(0, allplayers.Count - 1)];
                     Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
                     new LateTask(() => Reporter?.CmdReportDeadBody(target.Data), 0.15f, "Bait of MadmateJ Random Report");
                 }
