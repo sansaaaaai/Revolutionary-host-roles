@@ -3,9 +3,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-    <Description>Town Of Host</Description>
+    <Description>fork by Town Of Host</Description>
     <Authors>tukasa0001(EmptyBottle), integral0131</Authors>
     <langVersion>preview</langVersion>
+	<AssemblyName>RevolutionaryHostRoles</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +28,8 @@
     </PackageReference>
   </ItemGroup>
 
-  <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(AmongUs)/BepInEx/plugins/" Condition="'$(Configuration)' == 'Debug'" />
-  </Target>
+	<Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+		<Message Text="Second occurrence" />
+		<Copy SourceFiles="$(ProjectDir)bin\$(Configuration)\netstandard2.1$(AssemblyName).dll" DestinationFolder="$(AmongUs)/BepInEx/plugins/" />
+	</Target>
 </Project>

@@ -448,7 +448,7 @@ namespace TownOfHost
             Egoist.SetupCustomOption();
             Executioner.SetupCustomOption();
             Jackal.SetupCustomOption();
-            SetupJackalFellowOptions(300000);
+            SetupJackalFellowOptions(300100);
             // Add-Ons
             LastImpostor.SetupCustomOption();
             SetupJMadmateOptions();
