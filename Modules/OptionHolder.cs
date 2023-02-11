@@ -257,7 +257,9 @@ namespace TownOfHost
             "SuffixMode.Streaming",
             "SuffixMode.Recording",
             "SuffixMode.RoomHost",
-            "SuffixMode.OriginalName"
+            "SuffixMode.OriginalName",
+            "SuffixMode.HostGM",
+            "SuffixMode.GMSetting"
         };
         public static readonly string[] RoleAssigningAlgorithms =
         {
@@ -361,6 +363,7 @@ namespace TownOfHost
             TimeThief.SetupCustomOption();
             EvilTracker.SetupCustomOption();
             Reloader.SetupCustomOption();
+            Tricker.SetupCustomOption();
             DefaultShapeshiftCooldown = FloatOptionItem.Create(5011, "DefaultShapeshiftCooldown", new(5f, 999f, 5f), 15f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds);

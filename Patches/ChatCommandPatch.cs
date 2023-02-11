@@ -272,6 +272,7 @@ namespace TownOfHost
                 { CustomRoles.Warlock, "wa" },
                 { CustomRoles.Witch, "wi" },
                 { CustomRoles.Reloader, "rel" },
+                { CustomRoles.Tricker, "tri" },
                 //Madmate役職
                 { (CustomRoles)(-2), $"== {GetString("Madmate")} ==" }, //区切り用
                 { CustomRoles.MadGuardian, "mg" },

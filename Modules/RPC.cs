@@ -33,7 +33,9 @@ namespace TownOfHost
         SetCurrentDousingTarget,
         SetEvilTrackerTarget,
         SetRealKiller,
-        SetReloadCount
+        SetReloadCount,
+        SetTrickCount,
+        SetAntiTeleporterPosition
     }
     public enum Sounds
     {
@@ -202,6 +204,12 @@ namespace TownOfHost
                 case CustomRPC.SetReloadCount:
                     Reloader.ReceiveRPC(reader);
                     break;
+                case CustomRPC.SetTrickCount:
+                    Tricker.ReceiveRPC(reader);
+                    break;
+                case CustomRPC.SetAntiTeleporterPosition:
+                    AntiTeleporter.ReceiveRPC(reader);
+                    break;
             }
         }
     }
@@ -349,6 +357,9 @@ namespace TownOfHost
                     break;
                 case CustomRoles.Reloader:
                     Reloader.Add(targetId);
+                    break;
+                case CustomRoles.Tricker:
+                    Tricker.Add(targetId);
                     break;
                 case CustomRoles.AntiTeleporter:
                     AntiTeleporter.Add(targetId);

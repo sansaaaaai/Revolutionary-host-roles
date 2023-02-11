@@ -310,6 +310,7 @@ namespace TownOfHost
         TimeThief,
         EvilTracker,
         Reloader,
+        Tricker,
         //Madmate
         MadGuardian,
         Madmate,
@@ -399,7 +400,9 @@ namespace TownOfHost
         Streaming,
         Recording,
         RoomHost,
-        OriginalName
+        OriginalName,
+        HostGM,
+        GMSetting,
     }
     public enum VoteMode
     {

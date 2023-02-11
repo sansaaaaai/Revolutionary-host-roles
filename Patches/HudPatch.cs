@@ -99,6 +99,9 @@ namespace TownOfHost
                         __instance.AbilityButton.OverrideText($"{GetString("Reload")}");
                         //__instance.AbilityButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.ReloaderButton.png", 110f);
                         break;
+                    case CustomRoles.Tricker:
+                        __instance.AbilityButton.OverrideText($"{GetString("Trick")}");
+                        break;
                     case CustomRoles.Sheriff:
                         if (Main.ChangeRoleButtonImage.Value)
                         __instance.KillButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.SheriffKillButton.png", 110f);
