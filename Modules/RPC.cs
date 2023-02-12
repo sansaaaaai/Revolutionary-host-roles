@@ -350,6 +350,9 @@ namespace TownOfHost
                 case CustomRoles.Reloader:
                     Reloader.Add(targetId);
                     break;
+                case CustomRoles.AntiTeleporter:
+                    AntiTeleporter.Add(targetId);
+                    break;
             }
             HudManager.Instance.SetHudActive(true);
             if (PlayerControl.LocalPlayer.PlayerId == targetId) RemoveDisableDevicesPatch.UpdateDisableDevices();

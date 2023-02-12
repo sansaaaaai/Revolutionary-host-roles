@@ -304,9 +304,13 @@ namespace TownOfHost
                 { CustomRoles.SchrodingerCat, "sc" },
                 { CustomRoles.Terrorist, "te" },
                 { CustomRoles.Jackal, "jac" },
+                { CustomRoles.JackalFellow, "jacf" },
                 //属性
                 { (CustomRoles)(-6), $"== {GetString("Addons")} ==" }, //区切り用
+
                 {CustomRoles.Lovers, "lo" },
+                {CustomRoles.JMadmate, "jmm" },
+                {CustomRoles.AntiTeleporter, "at" },
                 //HAS
                 { (CustomRoles)(-7), $"== {GetString("HideAndSeek")} ==" }, //区切り用
                 { CustomRoles.HASFox, "hfo" },

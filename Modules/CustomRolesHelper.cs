@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using AmongUs.GameOptions;
 
 namespace TownOfHost
@@ -32,7 +34,19 @@ namespace TownOfHost
                 CustomRoles.SKMadmate or
                 CustomRoles.MadGuardian or
                 CustomRoles.MadSnitch or
-                CustomRoles.MSchrodingerCat;
+                CustomRoles.MSchrodingerCat or
+                CustomRoles.JMadmate;
+
+        }
+        public static List<CustomRoles> AllSubRoles()//ラバーズ、ラストインポスターは無し
+        {
+            List<CustomRoles> AllRole = System.Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>().ToList();
+            List<CustomRoles> SubRole = new();
+            foreach (CustomRoles role in AllRole)
+            {
+                if ((int)role >= 504) SubRole.Add(role);//AntiTeleporter以降の重複役職
+            }
+            return SubRole;
         }
         public static bool IsImpostorTeam(this CustomRoles role) => role.IsImpostor() || role.IsMadmate();
         public static bool IsNeutral(this CustomRoles role)
@@ -48,6 +62,7 @@ namespace TownOfHost
                 CustomRoles.EgoSchrodingerCat or
                 CustomRoles.Jackal or
                 CustomRoles.JSchrodingerCat or
+                CustomRoles.JackalFellow or
                 CustomRoles.HASTroll or
                 CustomRoles.HASFox;
         }

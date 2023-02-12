@@ -90,6 +90,14 @@ namespace TownOfHost.Modules
                     if (Options.MadmateCanSeeOtherVotes.GetBool())
                         opt.SetBool(BoolOptionNames.AnonymousVotes, false);
                     break;
+                default:
+                    if (player.Is(CustomRoles.JMadmate))
+                    {
+                        if (Options.MadmateCanSeeOtherVotes.GetBool())
+                            opt.SetBool(BoolOptionNames.AnonymousVotes, false);
+                        if (Options.MadmateHasImpostorVision.GetBool()) opt.SetVision(true);
+                    }
+                        break;
             }
 
             switch (player.GetCustomRole())
@@ -109,6 +117,11 @@ namespace TownOfHost.Modules
                     break;
                 case CustomRoles.BountyHunter:
                     BountyHunter.ApplyGameOptions();
+                    break;
+                case CustomRoles.JackalFellow:
+                    AURoleOptions.EngineerCooldown = Options.JackalFellowVentCooldown.GetFloat();
+                    Jackal.ApplyGameOptions(opt);
+                    opt.SetBool(BoolOptionNames.AnonymousVotes, Options.JackalFellowSpecial.GetValue() != 1);//falseで見える
                     break;
                 case CustomRoles.Reloader:
                     AURoleOptions.ShapeshifterCooldown = Reloader.ReloadCoolDown.GetFloat();

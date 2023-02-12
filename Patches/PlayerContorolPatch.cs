@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 using HarmonyLib;
 using Hazel;
 using UnityEngine;
+using UnityEngine.Profiling;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -244,8 +245,24 @@ namespace TownOfHost
             //When Bait is killed
             if (target.GetCustomRole() == CustomRoles.Bait && killer.PlayerId != target.PlayerId)
             {
-                Logger.Info(target?.Data?.PlayerName + "はBaitだった", "MurderPlayer");
-                new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f, "Bait Self Report");
+                if (target.Is(CustomRoles.JMadmate))
+                {
+                    List<PlayerControl> allplayers = new();
+                    foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                    {
+                        if (!p.Data.IsDead && !p.Is(CustomRoles.GM) && p.PlayerId != target.PlayerId)
+                            allplayers.Add(p);
+                    }
+                    var Reporter = allplayers[UnityEngine.Random.RandomRangeInt(0, allplayers.Count - 1)];
+                    Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
+                    new LateTask(() => Reporter?.CmdReportDeadBody(target.Data), 0.15f, "Bait of MadmateJ Random Report");
+                }
+                else
+                {
+                    Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
+                    new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f, "Bait self Report");
+
+                }
             }
             else
             //Terrorist
@@ -438,7 +455,17 @@ namespace TownOfHost
             //=============================================
             //以下、ボタンが押されることが確定したものとする。
             //=============================================
-
+            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+            {
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    if (p.Is(CustomRoles.AntiTeleporter))
+                    {
+                        Vector2 v = new(p.transform.position.x, p.transform.position.y);
+                        AntiTeleporter.LastPlace[p.PlayerId] = v;
+                    }
+                }
+            }
 
             Main.AllPlayerControls
                 .Where(pc => Main.CheckShapeshift.ContainsKey(pc.PlayerId))
@@ -761,6 +788,8 @@ namespace TownOfHost
                              (seer.Is(CustomRoles.JSchrodingerCat) && target.Is(CustomRoles.Jackal)) || //J猫 --> ジャッカル
                              (seer.Is(CustomRoles.MSchrodingerCat) && target.Is(RoleType.Impostor)) //M猫 --> インポスター
                     )
+                        RealName = Utils.ColorString(target.GetRoleColor(), RealName); //targetの名前をtargetの役職の色で表示
+                    else if (seer.Is(CustomRoles.JackalFellow) && ((Options.JackalFellowSpecial.GetValue() == 0 && seer.GetPlayerTaskState().IsTaskFinished) || Options.JackalFellowCanSeeJackal.GetBool()) && target.Is(CustomRoles.Jackal))
                         RealName = Utils.ColorString(target.GetRoleColor(), RealName); //targetの名前をtargetの役職の色で表示
                     else if (target.Is(CustomRoles.Mare) && Utils.IsActive(SystemTypes.Electrical))
                         RealName = Utils.ColorString(Utils.GetRoleColor(CustomRoles.Impostor), RealName); //targetの赤色で表示

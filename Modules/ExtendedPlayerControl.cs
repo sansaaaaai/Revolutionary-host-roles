@@ -530,7 +530,8 @@ namespace TownOfHost
         }
         public static bool KnowDeathReason(this PlayerControl seer, PlayerControl target)
             => (seer.Is(CustomRoles.Doctor)
-            || (seer.Is(RoleType.Madmate) && Options.MadmateCanSeeDeathReason.GetBool())
+            || ((seer.Is(RoleType.Madmate) || seer.Is(CustomRoles.JMadmate)) && Options.MadmateCanSeeDeathReason.GetBool())
+            || (seer.Is(CustomRoles.JackalFellow) && Options.JackalFellowSpecial.GetValue() == 2)
             || (seer.Data.IsDead && Options.GhostCanSeeDeathReason.GetBool()))
             && target.Data.IsDead;
         public static string GetRoleInfo(this PlayerControl player, bool InfoLong = false)
@@ -567,6 +568,10 @@ namespace TownOfHost
                     case CustomRoles.MadGuardian:
                         text = CustomRoles.Madmate.ToString();
                         Prefix = player.GetPlayerTaskState().IsTaskFinished ? "" : "Before";
+                        break;
+                    case CustomRoles.JackalFellow:
+                        text = CustomRoles.JackalFellow.ToString();
+                        Prefix = "";
                         break;
                 };
             return GetString($"{Prefix}{text}Info" + (InfoLong ? "Long" : ""));

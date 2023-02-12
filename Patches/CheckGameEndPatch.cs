@@ -37,12 +37,12 @@ namespace TownOfHost
                 {
                     case CustomWinner.Crewmate:
                         Main.AllPlayerControls
-                            .Where(pc => pc.Is(RoleType.Crewmate) && !pc.Is(CustomRoles.Lovers))
+                            .Where(pc => pc.Is(RoleType.Crewmate) && !pc.Is(CustomRoles.Lovers) && !pc.Is(CustomRoles.JMadmate))
                             .Do(pc => CustomWinnerHolder.WinnerIds.Add(pc.PlayerId));
                         break;
                     case CustomWinner.Impostor:
                         Main.AllPlayerControls
-                            .Where(pc => (pc.Is(RoleType.Impostor) || pc.Is(RoleType.Madmate)) && !pc.Is(CustomRoles.Lovers))
+                            .Where(pc => (pc.Is(RoleType.Impostor) || pc.Is(RoleType.Madmate) || pc.Is(CustomRoles.JMadmate)) && !pc.Is(CustomRoles.Lovers))
                             .Do(pc => CustomWinnerHolder.WinnerIds.Add(pc.PlayerId));
                         break;
                 }
@@ -215,6 +215,8 @@ namespace TownOfHost
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.Jackal);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackal);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JSchrodingerCat);
+                    CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalFellow);
+                    CustomWinnerHolder.AdditionalWinnerTeams.Add(AdditionalWinners.JackalFellow);
                 }
                 else if (Jackal == 0 && Imp + Ego == 0) //クルー勝利
                 {
