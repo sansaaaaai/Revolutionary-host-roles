@@ -1,8 +1,57 @@
-﻿using System;
+/*using DiscordRPC;
+using DiscordRPC.Logging;
+using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using TownOfHost;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
-public class Class1
+namespace SuperNewRoles.DiscordStatus
 {
-	public Class1()
-	{
-	}
+    public static class Patch
+    {
+        public static DiscordRpcClient client;
+        [HarmonyPatch(typeof(DiscordManager), nameof(DiscordManager.Start))]
+        class DiscordStartPatch
+        {
+            public static void Postfix()
+            {
+                client = new DiscordRpcClient("952318590617518180");
+
+                //Set the logger
+                client.Logger = new ConsoleLogger() { Level = LogLevel.Warning };
+
+                //Subscribe to events
+                client.OnReady += (sender, e) =>
+                {
+                    TownOfHost.Logger.Info(string.Format("Received Ready from user {0}", e.User.Username),"Discord");
+                };
+
+                client.OnPresenceUpdate += (sender, e) =>
+                {
+                    TownOfHost.Logger.Info(string.Format("Received Update! {0}", e.Presence),"Discord");
+                };
+
+                //Connect to the RPC
+                client.Initialize();
+
+                //Set the rich presence
+                //Call this as many times as you want and anywhere in your code.
+                client.SetPresence(new RichPresence()
+                {
+                    Details = "Example Project",
+                    State = "csharp example",
+                    Assets = new DiscordRPC.Assets()
+                    {
+                        LargeImageKey = "image_large",
+                        LargeImageText = "Lachee's Discord IPC Library",
+                        SmallImageKey = "image_small"
+                    }
+                });
+            }
+        }
+    }
 }
+*/

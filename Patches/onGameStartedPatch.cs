@@ -3,25 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 using Cpp2IL.Core;
-using Discord;
-using DiscordConnect;
 using HarmonyLib;
 using Hazel;
+using Discord;
 using Il2CppSystem.Security.AccessControl;
 using Sentry.Internal.Extensions;
 using TownOfHost.Modules;
 using static TownOfHost.Translator;
+using DiscordConnect;
+using static Il2CppSystem.ComponentModel.Design.ServiceContainer;
 
 namespace TownOfHost
 {
-    [HarmonyPatch(typeof(DiscordManager), nameof(DiscordManager.FixedUpdate))]
-    class Discord
-    {
-        public static void Postfix(DiscordManager __instance)
-        {
-            __instance.SendMessageUpwards("RHR");
-        }
-    }
+    
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGame))]
     class ChangeRoleSettings
     {
