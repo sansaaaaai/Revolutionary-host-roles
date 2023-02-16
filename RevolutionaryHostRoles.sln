@@ -5,11 +5,6 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TownOfHost", "TownOfHost.csproj", "{A50FDD9B-A57B-4287-9728-0BF49214AE48}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{4F83107B-2B44-4BCD-B8CC-D2FEF715BE39}"
-	ProjectSection(SolutionItems) = preProject
-		DiscordPatch.cs = DiscordPatch.cs
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
