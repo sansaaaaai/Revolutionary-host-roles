@@ -67,7 +67,7 @@ namespace TownOfHost
                 {
                     latestTitle = data["name"].ToString();
                     downloadUrl = data["url"].ToString();
-                    hasUpdate = latestTitle != ThisAssembly.Git.Commit;
+                    hasUpdate = false/*latestTitle != ThisAssembly.Git.Commit※リリースしたらこれを消してURLのリンクを変えてね！！*/;
                 }
                 else
                 {
@@ -91,8 +91,8 @@ namespace TownOfHost
                         if (assets[i]["name"].ToString() == "TownOfHost.dll")
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                     }
-                    
-                    hasUpdate = latestVersion.CompareTo(Main.version) > 0;
+
+                    hasUpdate = /*latestVersion.CompareTo(Main.version) > 0*//*リリースしたらURLを変えてここをかえてね！！ */false;
                 }
                 
                 if (downloadUrl == null)

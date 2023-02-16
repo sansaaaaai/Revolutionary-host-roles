@@ -170,7 +170,7 @@ namespace TownOfHost
                         }
                         break;
                     case CustomRoles.Vampire:
-                        if (!target.Is(CustomRoles.Bait))
+                        if (!target.Is(CustomRoles.Bait) ||!target.Is(CustomRoles.InSender))
                         { //キルキャンセル&自爆処理
                             killer.SetKillCooldown();
                             Main.BitPlayers.Add(target.PlayerId, (killer.PlayerId, 0f));
@@ -248,6 +248,8 @@ namespace TownOfHost
 
             if (RandomSpawn.CustomNetworkTransformPatch.NumOfTP.TryGetValue(__instance.PlayerId, out var num) && num > 2) RandomSpawn.CustomNetworkTransformPatch.NumOfTP[__instance.PlayerId] = 3;
             Camouflage.RpcSetSkin(target, ForceRevert: true);
+            if (!AmongUsClient.Instance.AmHost) return;
+            PlayerControl killer = __instance;
         }
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
@@ -312,6 +314,22 @@ namespace TownOfHost
                         new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f, "Bait self Report");
 
                     }
+                }
+            }
+            else if (target.GetCustomRole() == CustomRoles.InSender && killer.PlayerId != target.PlayerId)
+            {
+                if (killer.Is(CustomRoles.Tricker))
+                {
+                    if (!Tricker.willTrick[killer.PlayerId])
+                    {
+                        Logger.Info(target?.Data?.PlayerName + "がキルされました(インセンダー)", "MurderPlayer");
+                        new LateTask(() => target.CmdReportDeadBody(target.Data), 0.15f, "InSender Report");
+                    }
+                }
+                else
+                {
+                    Logger.Info(target?.Data?.PlayerName + "がキルされました(インセンダー)", "MurderPlayer");
+                    new LateTask(() => target.CmdReportDeadBody(target.Data), 0.15f, "InSender Report");
                 }
             }
             else
@@ -506,25 +524,7 @@ namespace TownOfHost
             //=============================================
             //以下、ボタンが押されることが確定したものとする。
             //=============================================
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-            {
-                if (p.Is(CustomRoles.AntiTeleporter))
-                {
-                    if (AntiTeleporter.LastPlace.ContainsKey(p.PlayerId))//Key入ってて
-                    {
-                        Vector2 Out = new(1, 1);
-                        if (AntiTeleporter.LastPlace[p.PlayerId] != Out)//わいたことあったから
-                        {
-                            Vector2 v = new(p.transform.position.x, p.transform.position.y);
-                            AntiTeleporter.LastPlace[p.PlayerId] = v;
-                        }
-                        else AntiTeleporter.LastPlace.Add(p.PlayerId, new Vector2(1, 1));//わいたことなかったらそのままLastPlaceのvalueは(1,1)になり、次はそのまま湧いてRandomSpawnPatchによってvalueが登録されます。
-                        if (AmongUsClient.Instance.AmHost) AntiTeleporter.SendRPC(p.PlayerId);
-                    }
-                    else AntiTeleporter.LastPlace.Add(p.PlayerId, new Vector2(1, 1));
-                }
-            }
-
+            AntiTeleporter.SetLastPlace();
             Main.AllPlayerControls
                 .Where(pc => Main.CheckShapeshift.ContainsKey(pc.PlayerId))
                 .Do(pc => Camouflage.RpcSetSkin(pc, RevertToDefault: true));

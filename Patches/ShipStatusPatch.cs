@@ -95,7 +95,7 @@ namespace TownOfHost
                     Camouflage.CheckCamouflage();
                     if (!GameStates.IsMeeting)
                         Utils.NotifyRoles(ForceLoop: true);
-                }, 0.1f, "ShipStatus.RepairSystem");
+                }, 0.1f, "ShipStatus.RepairSystem", false);
         }
         public static void CheckAndOpenDoorsRange(ShipStatus __instance, int amount, int min, int max)
         {

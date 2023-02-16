@@ -24,10 +24,15 @@ namespace TownOfHost
             if (HudManager.InstanceExists && HudManager._instance.Chat.ChatButton.active) offset_x += 0.8f; //チャットボタンがある場合の追加オフセット
             if (FriendsListManager.InstanceExists && FriendsListManager._instance.FriendsListButton.Button.active) offset_x += 0.8f; //フレンドリストボタンがある場合の追加オフセット
             __instance.GetComponent<AspectPosition>().DistanceFromEdge = new Vector3(offset_x, 0f, 0f);
-
+        /*
+#if DEBUG
+            __instance.text.text += $"\n({PlayerControl.LocalPlayer.transform.position.x},{PlayerControl.LocalPlayer.transform.position.y},{PlayerControl.LocalPlayer.transform.position.z})";
+#endif
+       */
             if (!GameStates.IsLobby) return;
             if (Options.IsStandardHAS && !CustomRoles.Sheriff.IsEnable() && !CustomRoles.SerialKiller.IsEnable() && CustomRoles.Egoist.IsEnable())
                 __instance.text.text += $"\r\n" + Utils.ColorString(Color.red, GetString("Warning.EgoistCannotWin"));
+
         }
     }
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]

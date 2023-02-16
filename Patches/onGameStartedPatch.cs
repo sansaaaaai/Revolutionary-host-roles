@@ -326,6 +326,7 @@ namespace TownOfHost
                 AssignCustomRolesFromList(CustomRoles.Reloader, Shapeshifters);
                 AssignCustomRolesFromList(CustomRoles.JackalFellow, Engineers);
                 AssignCustomRolesFromList(CustomRoles.Tricker, Shapeshifters);
+                AssignCustomRolesFromList(CustomRoles.InSender, Crewmates);
                 //必ずAssignJMadmateRoles()を後ろにおいてください
                 if (CustomRoles.JMadmate.IsEnable()) AssignJMadmateRoles();
                 foreach (CustomRoles role in CustomRolesHelper.AllSubRoles())

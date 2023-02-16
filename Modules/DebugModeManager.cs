@@ -12,7 +12,7 @@ namespace TownOfHost
         // また、ゲーム内オプションでデバッグモードを有効化することができる。
         public static bool AmDebugger { get; private set; } =
 #if DEBUG
-    true;
+    false;
 #else
     false;
 #endif

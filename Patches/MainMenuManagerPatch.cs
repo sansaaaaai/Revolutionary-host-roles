@@ -53,7 +53,6 @@ namespace TownOfHost
             updateButtonSprite.size *= 1.5f;
             updateButton.SetActive(false);
 
-#if RELEASE
             //フリープレイの無効化
             var freeplayButton = GameObject.Find("/MainUI/FreePlayButton");
             if (freeplayButton != null)
@@ -62,7 +61,6 @@ namespace TownOfHost
                 freeplayButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Application.OpenURL("https://github.com/sansaaaaai/Revolutionary-host-roles")));
                 __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) => freeplayButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>().SetText("GitHub"))));
             }
-#endif
         }
     }
 }
