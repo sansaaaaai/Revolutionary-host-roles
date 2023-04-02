@@ -32,6 +32,7 @@ namespace TownOfHost
                 HideName.text = ColorUtility.TryParseHtmlString(Main.HideColor.Value, out _)
                         ? $"<color={Main.HideColor.Value}>{Main.HideName.Value}</color>"
                         : $"<color={Main.ModColor}>{Main.HideName.Value}</color>";
+                if (!AmongUsClient.Instance.AmHost) return;
 
                 // Make Public Button
                 if (ModUpdater.isBroken || ModUpdater.hasUpdate || !Main.AllowPublicRoom)

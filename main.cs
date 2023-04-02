@@ -95,6 +95,7 @@ namespace TownOfHost
         public static bool isChatCommand = false;
         public static List<PlayerControl> LoversPlayers = new();
         public static bool isLoversDead = true;
+        public static List<PlayerControl> Addons = new();
         public static Dictionary<byte, float> AllPlayerKillCooldown = new();
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace TownOfHost
             Translator.Init();
             BanManager.Init();
             TemplateManager.Init();
-
+            
             IRandom.SetInstance(new NetRandomWrapper());
 
             hasArgumentException = false;
@@ -225,6 +226,7 @@ namespace TownOfHost
                     {CustomRoles.Dictator, "#df9b00"},
                     {CustomRoles.CSchrodingerCat, "#ffffff"}, //シュレディンガーの猫の派生
                     {CustomRoles.Seer, "#61b26c"},
+                    {CustomRoles.InSender, "#ffff00"},
                     //第三陣営役職
                     {CustomRoles.Arsonist, "#ff6633"},
                     {CustomRoles.Jester, "#ec62a5"},
@@ -236,6 +238,7 @@ namespace TownOfHost
                     {CustomRoles.EgoSchrodingerCat, "#5600ff"},
                     {CustomRoles.Jackal, "#00b4eb"},
                     {CustomRoles.JSchrodingerCat, "#00b4eb"},
+                    {CustomRoles.JackalFellow, "#00b4eb"},
                     //HideAndSeek
                     {CustomRoles.HASFox, "#e478ff"},
                     {CustomRoles.HASTroll, "#00ff00"},
@@ -244,7 +247,7 @@ namespace TownOfHost
                     //サブ役職
                     {CustomRoles.LastImpostor, "#ff0000"},
                     {CustomRoles.Lovers, "#ff6be4"},
-
+                    {CustomRoles.AntiTeleporter, "#ff0000"},
                     {CustomRoles.NotAssigned, "#ffffff"}
                 };
                 foreach (var role in Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>())
@@ -308,6 +311,7 @@ namespace TownOfHost
         TimeThief,
         EvilTracker,
         Reloader,
+        Tricker,
         //Madmate
         MadGuardian,
         Madmate,
@@ -333,6 +337,7 @@ namespace TownOfHost
         Dictator,
         Doctor,
         Seer,
+        InSender,
         CSchrodingerCat,//クルー陣営のシュレディンガーの猫
         //Neutral
         Arsonist,
@@ -345,6 +350,7 @@ namespace TownOfHost
         Executioner,
         Jackal,
         JSchrodingerCat,//ジャッカル陣営のシュレディンガーの猫
+        JackalFellow,
         //HideAndSeek
         HASFox,
         HASTroll,
@@ -352,8 +358,10 @@ namespace TownOfHost
         GM,
         // Sub-roll after 500
         NotAssigned = 500,
-        LastImpostor,
-        Lovers,
+        LastImpostor = 501,
+        Lovers = 502,
+        JMadmate = 503,//重複マッドメイト
+        AntiTeleporter
     }
     //WinData
     public enum CustomWinner
@@ -378,6 +386,7 @@ namespace TownOfHost
         Opportunist = CustomRoles.Opportunist,
         SchrodingerCat = CustomRoles.SchrodingerCat,
         Executioner = CustomRoles.Executioner,
+        JackalFellow = CustomRoles.JackalFellow,
         HASFox = CustomRoles.HASFox,
     }
     /*public enum CustomRoles : byte
@@ -393,7 +402,9 @@ namespace TownOfHost
         Streaming,
         Recording,
         RoomHost,
-        OriginalName
+        OriginalName,
+        HostGM,
+        GMSetting,
     }
     public enum VoteMode
     {

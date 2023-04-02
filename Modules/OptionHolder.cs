@@ -50,6 +50,10 @@ namespace TownOfHost
         {
             "Standard", "HideAndSeek",
         };
+        public static readonly string[] JackalFellowSpecials =
+{
+            CustomRoles.MadSnitch.ToString(), CustomRoles.Watcher.ToString(),CustomRoles.Doctor.ToString(),CustomRoles.Seer.ToString()
+        };
 
         // MapActive
         public static bool IsActiveSkeld => AddedTheSkeld.GetBool() || Main.NormalOptions.MapId == 0;
@@ -83,6 +87,7 @@ namespace TownOfHost
         public static OptionItem MadGuardianCanSeeWhoTriedToKill;
         public static OptionItem MadSnitchCanVent;
         public static OptionItem MadSnitchCanAlsoBeExposedToImpostor;
+        //統一系
         public static OptionItem MadmateCanFixLightsOut; // TODO:mii-47 マッド役職統一
         public static OptionItem MadmateCanFixComms;
         public static OptionItem MadmateHasImpostorVision;
@@ -90,9 +95,13 @@ namespace TownOfHost
         public static OptionItem MadmateCanSeeOtherVotes;
         public static OptionItem MadmateCanSeeDeathReason;
         public static OptionItem MadmateRevengeCrewmate;
+        //ここまではJMadmateで出来るように実装済み
         public static OptionItem MadmateVentCooldown;
         public static OptionItem MadmateVentMaxTime;
 
+        public static OptionItem JackalFellowVentCooldown;
+        public static OptionItem JackalFellowCanSeeJackal;
+        public static OptionItem JackalFellowSpecial;
         public static OptionItem EvilWatcherChance;
         public static OptionItem LighterTaskCompletedVision;
         public static OptionItem LighterTaskCompletedDisableLightOut;
@@ -110,7 +119,7 @@ namespace TownOfHost
         public static OptionItem ArsonistDouseTime;
         public static OptionItem ArsonistCooldown;
         public static OptionItem KillFlashDuration;
-
+        public static OptionItem JMadmateCountOption;
         // HideAndSeek
         public static OptionItem AllowCloseDoors;
         public static OptionItem KillDelay;
@@ -248,7 +257,9 @@ namespace TownOfHost
             "SuffixMode.Streaming",
             "SuffixMode.Recording",
             "SuffixMode.RoomHost",
-            "SuffixMode.OriginalName"
+            "SuffixMode.OriginalName",
+            "SuffixMode.HostGM",
+            "SuffixMode.GMSetting"
         };
         public static readonly string[] RoleAssigningAlgorithms =
         {
@@ -352,6 +363,7 @@ namespace TownOfHost
             TimeThief.SetupCustomOption();
             EvilTracker.SetupCustomOption();
             Reloader.SetupCustomOption();
+            Tricker.SetupCustomOption();
             DefaultShapeshiftCooldown = FloatOptionItem.Create(5011, "DefaultShapeshiftCooldown", new(5f, 999f, 5f), 15f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds);
@@ -419,7 +431,7 @@ namespace TownOfHost
                 .SetValueFormat(OptionFormat.Seconds);
             SetupRoleOptions(20900, TabGroup.CrewmateRoles, CustomRoles.Dictator);
             SetupRoleOptions(21000, TabGroup.CrewmateRoles, CustomRoles.Seer);
-
+            SetupRoleOptions(500000, TabGroup.CrewmateRoles, CustomRoles.InSender);
             // Neutral
             SetupRoleOptions(50500, TabGroup.NeutralRoles, CustomRoles.Arsonist);
             ArsonistDouseTime = FloatOptionItem.Create(50510, "ArsonistDouseTime", new(1f, 10f, 1f), 3f, TabGroup.NeutralRoles, false).SetParent(CustomRoleSpawnChances[CustomRoles.Arsonist])
@@ -439,11 +451,12 @@ namespace TownOfHost
             Egoist.SetupCustomOption();
             Executioner.SetupCustomOption();
             Jackal.SetupCustomOption();
-
-            // Add-Ons
+            SetupJackalFellowOptions(300100);
+            //Add-Ons
             LastImpostor.SetupCustomOption();
+            SetupJMadmateOptions();
+            SetupRoleOptions(310500, TabGroup.Addons, CustomRoles.AntiTeleporter);
             #endregion
-
             KillFlashDuration = FloatOptionItem.Create(90000, "KillFlashDuration", new(0.1f, 0.45f, 0.05f), 0.3f, TabGroup.MainSettings, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds)
@@ -616,8 +629,8 @@ namespace TownOfHost
             AirShipVariableElectrical = BooleanOptionItem.Create(101600, "AirShipVariableElectrical", false, TabGroup.MainSettings, false)
                 .SetHeader(true);
 
-            // 通常モードでかくれんぼ用
-            StandardHAS = BooleanOptionItem.Create(100700, "StandardHAS", false, TabGroup.MainSettings, false)
+        // 通常モードでかくれんぼ用
+        StandardHAS = BooleanOptionItem.Create(100700, "StandardHAS", false, TabGroup.MainSettings, false)
                 .SetHeader(true)
                 .SetGameMode(CustomGameMode.Standard);
             StandardHASWaitingTime = FloatOptionItem.Create(100701, "StandardHASWaitingTime", new(0f, 180f, 2.5f), 10f, TabGroup.MainSettings, false).SetParent(StandardHAS)
@@ -668,6 +681,7 @@ namespace TownOfHost
             IsLoaded = true;
         }
 
+
         public static void SetupRoleOptions(int id, TabGroup tab, CustomRoles role, CustomGameMode customGameMode = CustomGameMode.Standard)
         {
             var spawnOption = StringOptionItem.Create(id, role.ToString(), ratesZeroOne, 0, tab, false).SetColor(Utils.GetRoleColor(role))
@@ -680,6 +694,22 @@ namespace TownOfHost
             CustomRoleSpawnChances.Add(role, spawnOption);
             CustomRoleCounts.Add(role, countOption);
         }
+        public static void SetupJackalFellowOptions(int id, TabGroup tab = TabGroup.NeutralRoles, CustomRoles role = CustomRoles.JackalFellow, CustomGameMode customGameMode = CustomGameMode.Standard)
+        {
+            var spawnOption = StringOptionItem.Create(id, role.ToString(), ratesZeroOne, 0, tab, false).SetColor(Utils.GetRoleColor(role))/*.SetParent(CustomRoleSpawnChances[CustomRoles.Jackal])*/
+                .SetHeader(true)
+                .SetGameMode(customGameMode) as StringOptionItem;
+            var countOption = IntegerOptionItem.Create(id + 1, "Maximum", new(1, 15, 1), 1, tab, false).SetParent(spawnOption)
+                .SetValueFormat(OptionFormat.Players)
+                .SetGameMode(customGameMode);
+            JackalFellowVentCooldown = FloatOptionItem.Create(id + 2, "VentCooldown", new(0f, 180f, 2.5f), 0f, TabGroup.NeutralRoles, false)
+    .SetValueFormat(OptionFormat.Seconds).SetParent(spawnOption);
+            JackalFellowCanSeeJackal = BooleanOptionItem.Create(id + 3, "CanSeeJackal", false, TabGroup.NeutralRoles, false).SetParent(spawnOption);
+            JackalFellowSpecial= StringOptionItem.Create(id + 4, "JackalFellowSpecials", JackalFellowSpecials, 0, TabGroup.NeutralRoles, false).SetParent(spawnOption)
+    .SetGameMode(CustomGameMode.Standard);
+            CustomRoleSpawnChances.Add(role, spawnOption);
+            CustomRoleCounts.Add(role, countOption);
+        }
         private static void SetupLoversRoleOptionsToggle(int id, CustomGameMode customGameMode = CustomGameMode.Standard)
         {
             var role = CustomRoles.Lovers;
@@ -689,6 +719,19 @@ namespace TownOfHost
 
             var countOption = IntegerOptionItem.Create(id + 1, "NumberOfLovers", new(2, 2, 1), 2, TabGroup.Addons, false).SetParent(spawnOption)
                 .SetHidden(true)
+                .SetGameMode(customGameMode);
+
+            CustomRoleSpawnChances.Add(role, spawnOption);
+            CustomRoleCounts.Add(role, countOption);
+        }
+        private static void SetupJMadmateOptions(int id = 310000, CustomGameMode customGameMode = CustomGameMode.Standard)
+        {
+            var role = CustomRoles.JMadmate;
+            var spawnOption = StringOptionItem.Create(id, role.ToString(), ratesZeroOne, 0, TabGroup.Addons, false).SetColor(Utils.GetRoleColor(role))
+                .SetHeader(true)
+                .SetGameMode(customGameMode) as StringOptionItem;
+
+            var countOption = IntegerOptionItem.Create(id + 1, "Maximum", new(1, 15, 1), 2, TabGroup.Addons, false).SetParent(spawnOption)
                 .SetGameMode(customGameMode);
 
             CustomRoleSpawnChances.Add(role, spawnOption);

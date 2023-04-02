@@ -30,9 +30,9 @@ namespace TownOfHost
                 if (date == DateTime.MinValue) continue;
                 var killerId = kvp.Value.GetRealKiller();
                 var targetId = kvp.Key;
-                KillLog += $"\n{date:T} {Main.AllPlayerNames[targetId]}({Utils.GetDisplayRoleName(targetId)}{Utils.GetSubRolesText(targetId)}) [{Utils.GetVitalText(kvp.Key)}]";
+                KillLog += $"\n{date:T} {Main.AllPlayerNames[targetId]}({Utils.GetDisplayRoleName(targetId)}{(Utils.GetPlayerById(targetId).Is(CustomRoles.AntiTeleporter) || Utils.GetPlayerById(targetId).Is(CustomRoles.JMadmate) ? "" :Utils.GetSubRolesText(targetId))}) [{Utils.GetVitalText(kvp.Key)}]";
                 if (killerId != byte.MaxValue && killerId != targetId)
-                    KillLog += $"\n\t\t⇐ {Main.AllPlayerNames[killerId]}({Utils.GetDisplayRoleName(killerId)}{Utils.GetSubRolesText(killerId)})";
+                    KillLog += $"\n\t\t⇐ {Main.AllPlayerNames[killerId]}({Utils.GetDisplayRoleName(killerId)}{(Utils.GetPlayerById(targetId).Is(CustomRoles.AntiTeleporter) || Utils.GetPlayerById(targetId).Is(CustomRoles.JMadmate) ? "" : Utils.GetSubRolesText(targetId))})";
             }
             Main.NormalOptions.KillCooldown = Options.DefaultKillCooldown;
             //winnerListリセット

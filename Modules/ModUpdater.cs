@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -66,13 +67,15 @@ namespace TownOfHost
                 {
                     latestTitle = data["name"].ToString();
                     downloadUrl = data["url"].ToString();
-                    hasUpdate = latestTitle != ThisAssembly.Git.Commit;
+                    hasUpdate = false/*latestTitle != ThisAssembly.Git.Commit※リリースしたらこれを消してURLのリンクを変えてね！！*/;
                 }
                 else
                 {
                     latestVersion = new(data["tag_name"]?.ToString().TrimStart('v'));
                     latestTitle = $"Ver. {latestVersion}";
+                    
                     JArray assets = data["assets"].Cast<JArray>();
+                    
                     for (int i = 0; i < assets.Count; i++)
                     {
                         if (assets[i]["name"].ToString() == "TownOfHost_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
@@ -88,13 +91,16 @@ namespace TownOfHost
                         if (assets[i]["name"].ToString() == "TownOfHost.dll")
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                     }
-                    hasUpdate = latestVersion.CompareTo(Main.version) > 0;
+
+                    hasUpdate = /*latestVersion.CompareTo(Main.version) > 0*//*リリースしたらURLを変えてここをかえてね！！ */false;
                 }
+                
                 if (downloadUrl == null)
                 {
                     Logger.Error("ダウンロードURLを取得できませんでした。", "CheckRelease");
                     return false;
                 }
+                
                 isChecked = true;
                 isBroken = false;
             }

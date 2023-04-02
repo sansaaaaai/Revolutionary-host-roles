@@ -245,7 +245,7 @@ namespace TownOfHost
                 {
                     //ここに道連れ役職を追加
                     default:
-                        if (exiledplayer.Is(RoleType.Madmate) && Options.MadmateRevengeCrewmate.GetBool() //黒猫オプション
+                        if ((exiledplayer.Is(RoleType.Madmate) || exiledplayer.Is(CustomRoles.JMadmate)) && Options.MadmateRevengeCrewmate.GetBool() //黒猫オプション
                         && !candidate.Is(RoleType.Impostor))
                             TargetList.Add(candidate);
                         break;
@@ -372,8 +372,7 @@ namespace TownOfHost
                         LocalPlayerKnowsEgoist = true;
                         if (target.Is(CustomRoles.MadSnitch) && target.GetPlayerTaskState().IsTaskFinished && Options.MadSnitchCanAlsoBeExposedToImpostor.GetBool())
                             pva.NameText.text += Utils.ColorString(Utils.GetRoleColor(CustomRoles.MadSnitch), "★"); //変更対象にSnitchマークをつける
-                        else if (target.Is(CustomRoles.Snitch) && //変更対象がSnitch
-                        target.GetPlayerTaskState().DoExpose) //変更対象のタスクが終わりそう)
+                        else if (target.Is(CustomRoles.Snitch) && target.GetPlayerTaskState().DoExpose) //変更対象のタスクが終わりそう)
                             pva.NameText.text += Utils.ColorString(Utils.GetRoleColor(CustomRoles.Snitch), "★"); //変更対象にSnitchマークをつける
                         break;
                 }
@@ -400,9 +399,7 @@ namespace TownOfHost
                         break;
                     case CustomRoles.Egoist:
                     case CustomRoles.Jackal:
-                        if (Options.SnitchCanFindNeutralKiller.GetBool() &&
-                        target.Is(CustomRoles.Snitch) && //変更対象がSnitch
-                        target.GetPlayerTaskState().DoExpose) //変更対象のタスクが終わりそう)
+                        if (Options.SnitchCanFindNeutralKiller.GetBool() && target.Is(CustomRoles.Snitch) && target.GetPlayerTaskState().DoExpose) //変更対象のタスクが終わりそう)
                             pva.NameText.text += Utils.ColorString(Utils.GetRoleColor(CustomRoles.Snitch), "★"); //変更対象にSnitchマークをつける
                         break;
                     case CustomRoles.EvilTracker:
@@ -413,6 +410,9 @@ namespace TownOfHost
                         break;
                     case CustomRoles.JSchrodingerCat:
                         LocalPlayerKnowsJackal = true;
+                        break;
+                    case CustomRoles.JackalFellow:
+                        LocalPlayerKnowsJackal = ((Options.JackalFellowSpecial.GetValue() == 0 && seer.GetPlayerTaskState().IsTaskFinished) || Options.JackalFellowCanSeeJackal.GetBool());
                         break;
                 }
 
