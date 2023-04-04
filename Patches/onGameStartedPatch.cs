@@ -2,13 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
+using Cpp2IL.Core;
 using HarmonyLib;
 using Hazel;
+using Discord;
+using Il2CppSystem.Security.AccessControl;
+using Sentry.Internal.Extensions;
 using TownOfHost.Modules;
 using static TownOfHost.Translator;
+using DiscordConnect;
+using static Il2CppSystem.ComponentModel.Design.ServiceContainer;
 
 namespace TownOfHost
 {
+    
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGame))]
     class ChangeRoleSettings
     {
@@ -116,6 +123,7 @@ namespace TownOfHost
             EvilTracker.Init();
             LastImpostor.Init();
             Reloader.Init();
+            Tricker.Init();
             AntiTeleporter.Init();
             CustomWinnerHolder.Reset();
             AntiBlackout.Reset();
@@ -165,7 +173,7 @@ namespace TownOfHost
                 roleOpt.SetRoleRate(RoleTypes.Engineer, EngineerNum + AdditionalEngineerNum, AdditionalEngineerNum > 0 ? 100 : roleOpt.GetChancePerGame(RoleTypes.Engineer));
 
                 int ShapeshifterNum = roleOpt.GetNumPerGame(RoleTypes.Shapeshifter);
-                int AdditionalShapeshifterNum = CustomRoles.SerialKiller.GetCount() + CustomRoles.BountyHunter.GetCount() + CustomRoles.Warlock.GetCount()/* + CustomRoles.ShapeMaster.GetCount()*/ + CustomRoles.FireWorks.GetCount() + CustomRoles.Sniper.GetCount() + CustomRoles.EvilTracker.GetCount() + CustomRoles.Reloader.GetCount();//- ShapeshifterNum;
+                int AdditionalShapeshifterNum = CustomRoles.SerialKiller.GetCount() + CustomRoles.BountyHunter.GetCount() + CustomRoles.Warlock.GetCount()/* + CustomRoles.ShapeMaster.GetCount()*/ + CustomRoles.FireWorks.GetCount() + CustomRoles.Sniper.GetCount() + CustomRoles.EvilTracker.GetCount() + CustomRoles.Reloader.GetCount() + CustomRoles.Tricker.GetCount();//- ShapeshifterNum;
                 if (Main.RealOptionsData.GetInt(Int32OptionNames.NumImpostors) > 1)
                     AdditionalShapeshifterNum += CustomRoles.Egoist.GetCount();
                 roleOpt.SetRoleRate(RoleTypes.Shapeshifter, ShapeshifterNum + AdditionalShapeshifterNum, AdditionalShapeshifterNum > 0 ? 100 : roleOpt.GetChancePerGame(RoleTypes.Shapeshifter));
@@ -317,6 +325,8 @@ namespace TownOfHost
                 AssignCustomRolesFromList(CustomRoles.Seer, Crewmates);
                 AssignCustomRolesFromList(CustomRoles.Reloader, Shapeshifters);
                 AssignCustomRolesFromList(CustomRoles.JackalFellow, Engineers);
+                AssignCustomRolesFromList(CustomRoles.Tricker, Shapeshifters);
+                AssignCustomRolesFromList(CustomRoles.InSender, Crewmates);
                 //必ずAssignJMadmateRoles()を後ろにおいてください
                 if (CustomRoles.JMadmate.IsEnable()) AssignJMadmateRoles();
                 foreach (CustomRoles role in CustomRolesHelper.AllSubRoles())
@@ -399,6 +409,9 @@ namespace TownOfHost
                         case CustomRoles.Reloader:
                             Reloader.Add(pc.PlayerId);
                             break;
+                        case CustomRoles.Tricker:
+                            Tricker.Add(pc.PlayerId);
+                            break;
                     }
                     pc.ResetKillCooldown();
 
@@ -433,7 +446,7 @@ namespace TownOfHost
                 roleOpt.SetRoleRate(RoleTypes.Engineer, EngineerNum, roleOpt.GetChancePerGame(RoleTypes.Engineer));
 
                 int ShapeshifterNum = roleOpt.GetNumPerGame(RoleTypes.Shapeshifter);
-                ShapeshifterNum -= CustomRoles.SerialKiller.GetCount() + CustomRoles.BountyHunter.GetCount() + CustomRoles.Warlock.GetCount()/* + CustomRoles.ShapeMaster.GetCount()*/ + CustomRoles.FireWorks.GetCount() + CustomRoles.Sniper.GetCount() + CustomRoles.EvilTracker.GetCount() + CustomRoles.Reloader.GetCount();
+                ShapeshifterNum -= CustomRoles.SerialKiller.GetCount() + CustomRoles.BountyHunter.GetCount() + CustomRoles.Warlock.GetCount()/* + CustomRoles.ShapeMaster.GetCount()*/ + CustomRoles.FireWorks.GetCount() + CustomRoles.Sniper.GetCount() + CustomRoles.EvilTracker.GetCount() + CustomRoles.Reloader.GetCount() + CustomRoles.Tricker.GetCount();
                 if (Main.RealOptionsData.GetInt(Int32OptionNames.NumImpostors) > 1)
                     ShapeshifterNum -= CustomRoles.Egoist.GetCount();
                 roleOpt.SetRoleRate(RoleTypes.Shapeshifter, ShapeshifterNum, roleOpt.GetChancePerGame(RoleTypes.Shapeshifter));

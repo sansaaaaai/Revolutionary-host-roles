@@ -99,6 +99,9 @@ namespace TownOfHost
                         __instance.AbilityButton.OverrideText($"{GetString("Reload")}");
                         //__instance.AbilityButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.ReloaderButton.png", 110f);
                         break;
+                    case CustomRoles.Tricker:
+                        __instance.AbilityButton.OverrideText($"{GetString("Trick")}");
+                        break;
                     case CustomRoles.Sheriff:
                         if (Main.ChangeRoleButtonImage.Value)
                         __instance.KillButton.graphic.sprite = Utils.LoadSprite("TownOfHost.Resources.SheriffKillButton.png", 110f);
@@ -235,16 +238,19 @@ namespace TownOfHost
             ((Renderer)__instance.myRend).material.SetColor("_AddColor", mainTarget ? color : Color.clear);
         }
     }
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.SetHudActive))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.SetHudActive), new Type[] { typeof(PlayerControl), typeof(RoleBehaviour), typeof(bool) })]
     class SetHudActivePatch
     {
         public static bool IsActive = false;
-        public static void Postfix(HudManager __instance, [HarmonyArgument(0)] bool isActive)
+        public static void Postfix(HudManager __instance, [HarmonyArgument(2)] bool isActive)
         {
+            __instance.ReportButton.ToggleVisible(!GameStates.IsLobby && isActive);
+            if (!GameStates.IsModHost) return;
             IsActive = isActive;
             if (!isActive) return;
 
             var player = PlayerControl.LocalPlayer;
+            if (player == null) return;
             switch (player.GetCustomRole())
             {
                 case CustomRoles.Sheriff:

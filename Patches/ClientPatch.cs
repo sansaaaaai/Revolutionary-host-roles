@@ -70,7 +70,7 @@ namespace TownOfHost
         public static void Prefix(ref bool canOnline)
         {
 #if DEBUG
-            if (CultureInfo.CurrentCulture.Name != "ja-JP") canOnline = false;
+           // if (CultureInfo.CurrentCulture.Name != "ja-JP") canOnline = false;
 #endif
         }
     }
@@ -84,7 +84,7 @@ namespace TownOfHost
             __instance.BanButton.gameObject.SetActive(AmongUsClient.Instance.CanBan());
             __instance.KickButton.gameObject.SetActive(AmongUsClient.Instance.CanKick());
             __instance.MenuButton.gameObject.SetActive(show);
-            __instance.hotkeyGlyph.SetActive(show);
+            //__instance.ho.SetActive(show);
             return false;
         }
     }

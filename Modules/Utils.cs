@@ -12,6 +12,7 @@ using Sentry.Internal;
 using TownOfHost.Modules;
 using UnhollowerBaseLib;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -366,6 +367,9 @@ namespace TownOfHost
                 case CustomRoles.Reloader:
                     ProgressText += Reloader.SetMark(playerId);
                     break;
+                case CustomRoles.Tricker:
+                    ProgressText += Tricker.SetMark(playerId);
+                    break;
                 default:
                     //タスクテキスト
                     var taskState = Main.PlayerStates?[playerId].GetTaskState();
@@ -646,6 +650,12 @@ namespace TownOfHost
                         break;
                     case SuffixModes.OriginalName:
                         name += $"\r\n<color={Main.ModColor}>{DataManager.player.Customization.Name}</color>";
+                        break;
+                    case SuffixModes.GMSetting:
+                        name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.GMSetting")}</color>";
+                        break;
+                    case SuffixModes.HostGM:
+                        name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.HostGM")}</color>";
                         break;
                 }
             }
@@ -1039,8 +1049,9 @@ namespace TownOfHost
         }
         public static string SummaryTexts(byte id, bool disableColor = true)
         {
+            var p = Utils.GetPlayerById(id);
             var RolePos = TranslationController.Instance.currentLanguage.languageID == SupportedLangs.English ? 47 : 37;
-            string summary = $"{ColorString(Main.PlayerColors[id], Main.AllPlayerNames[id])}<pos=22%> {GetProgressText(id)}</pos><pos=29%> {GetVitalText(id)}</pos><pos={RolePos}%> {GetDisplayRoleName(id)}{GetSubRolesText(id)}</pos>";
+            string summary = $"{ColorString(Main.PlayerColors[id], Main.AllPlayerNames[id])}<pos=22%> {GetProgressText(id)}</pos><pos=29%> {GetVitalText(id)}</pos><pos={RolePos}%> {GetDisplayRoleName(id)}{(p.Is(CustomRoles.AntiTeleporter) || p.Is(CustomRoles.JMadmate) ? "" : Utils.GetSubRolesText(id))}</pos>";
             return disableColor ? summary.RemoveHtmlTags() : summary;
         }
         public static string RemoveHtmlTags(this string str) => Regex.Replace(str, "<[^>]*?>", "");

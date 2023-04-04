@@ -128,6 +128,11 @@ namespace TownOfHost.Modules
                     AURoleOptions.ShapeshifterDuration = 1f;
                     AURoleOptions.ShapeshifterLeaveSkin = false;
                     break;
+                case CustomRoles.Tricker:
+                    AURoleOptions.ShapeshifterCooldown = Tricker.TrickCoolDown.GetFloat();
+                    AURoleOptions.ShapeshifterDuration = 1f;
+                    AURoleOptions.ShapeshifterLeaveSkin = false;
+                    break;
                 case CustomRoles.EvilWatcher:
                 case CustomRoles.NiceWatcher:
                     opt.SetBool(BoolOptionNames.AnonymousVotes, false);
