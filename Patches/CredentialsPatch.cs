@@ -1,5 +1,7 @@
+
 using System.Globalization;
 using HarmonyLib;
+using Sentry;
 using UnityEngine;
 using static TownOfHost.Translator;
 
@@ -22,16 +24,27 @@ namespace TownOfHost
             if (HudManager.InstanceExists && HudManager._instance.Chat.ChatButton.active) offset_x += 0.8f; //チャットボタンがある場合の追加オフセット
             if (FriendsListManager.InstanceExists && FriendsListManager._instance.FriendsListButton.Button.active) offset_x += 0.8f; //フレンドリストボタンがある場合の追加オフセット
             __instance.GetComponent<AspectPosition>().DistanceFromEdge = new Vector3(offset_x, 0f, 0f);
-
+        /*
+#if DEBUG
+            __instance.text.text += $"\n({PlayerControl.LocalPlayer.transform.position.x},{PlayerControl.LocalPlayer.transform.position.y},{PlayerControl.LocalPlayer.transform.position.z})";
+#endif
+       */
             if (!GameStates.IsLobby) return;
             if (Options.IsStandardHAS && !CustomRoles.Sheriff.IsEnable() && !CustomRoles.SerialKiller.IsEnable() && CustomRoles.Egoist.IsEnable())
                 __instance.text.text += $"\r\n" + Utils.ColorString(Color.red, GetString("Warning.EgoistCannotWin"));
+
         }
     }
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
     class VersionShowerStartPatch
     {
         static TMPro.TextMeshPro SpecialEventText;
+        public static string Authors = Utils.ColorString(Color.yellow, GetString("Author"));
+        public static string Developers = Utils.ColorString(Color.blue, GetString("Developers"));
+        public static string Sansai = Utils.ColorString(Color.green, GetString("sansai"));
+        public static string GKT = Utils.ColorString(Palette.Orange, GetString("GKT"));
+        public static string NemuA = Utils.ColorString(Color.red, GetString("NemuA"));
+        public static string Haron = "<color=#00fa9a>" + GetString("haron") + "</color>";
         static void Postfix(VersionShower __instance)
         {
             Main.credentialsText = $"\r\n<color={Main.ModColor}>{Main.ModName}</color> v{Main.PluginVersion}";
@@ -72,6 +85,30 @@ namespace TownOfHost
                 SpecialEventText.text = "何とは言いませんが、特別な日ですね。\n<size=15%>\n\n末永く爆発しろ</size>";
                 SpecialEventText.color = Utils.GetRoleColor(CustomRoles.Lovers);
             }
+
+
+
+            var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
+            if (amongUsLogo == null) return;
+            var langId = TranslationController.InstanceExists ? TranslationController.Instance.currentLanguage.languageID : SupportedLangs.English;
+            /*=============製作者の名前=====================*/
+            var credentials_2 = UnityEngine.Object.Instantiate<TMPro.TextMeshPro>(__instance.text);
+            credentials_2.transform.position = new Vector3(0, 334f, 0);
+            string credentialsText = "";
+            credentialsText += "";
+            credentials_2.SetText(credentialsText);
+
+            credentials_2.alignment = TMPro.TextAlignmentOptions.Center;
+            credentials_2.fontSize *= 0.9f;
+
+            var RHRName = UnityEngine.Object.Instantiate(credentials_2);
+            RHRName.transform.position = new Vector3(0, -0.2f, 0);
+            RHRName.SetText(string.Format($"{(langId != SupportedLangs.Japanese ? "<size=125%>" : "<size=100%>")}" + Authors + " : " + Sansai + "\n" + Developers + " : " + Sansai + " " + Haron + " " + GKT + " " + NemuA + "</size>"));
+
+            credentials.transform.SetParent(amongUsLogo.transform);
+            RHRName.transform.SetParent(amongUsLogo.transform);
+            /*=============製作者の名前=====================*/
+
         }
     }
 
@@ -93,6 +130,7 @@ namespace TownOfHost
             var renderer = tohLogo.AddComponent<SpriteRenderer>();
             renderer.sprite = Utils.LoadSprite("TownOfHost.Resources.RHRlogo.png", 300f);
         }
+
     }
     [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
     class ModManagerLateUpdatePatch

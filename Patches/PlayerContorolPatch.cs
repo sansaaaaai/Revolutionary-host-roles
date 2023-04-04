@@ -107,9 +107,20 @@ namespace TownOfHost
             switch (target.GetCustomRole())
             {
                 case CustomRoles.SchrodingerCat:
-                    if (!SchrodingerCat.OnCheckMurder(killer, target))
-                        return false;
-                    break;
+                    if (!killer.Is(CustomRoles.Tricker))
+                    {
+                        if (!SchrodingerCat.OnCheckMurder(killer, target))
+                            return false;
+                    }
+                    else
+                    {
+                        if (!Tricker.willTrick[killer.PlayerId])
+                        {
+                            if (!SchrodingerCat.OnCheckMurder(killer, target))
+                                return false;
+                        }
+                    }
+                        break;
 
                 //==========マッドメイト系役職==========//
                 case CustomRoles.MadGuardian:
@@ -146,8 +157,20 @@ namespace TownOfHost
                     case CustomRoles.SerialKiller:
                         SerialKiller.OnCheckMurder(killer);
                         break;
+                    case CustomRoles.Tricker:
+                        if (Tricker.willTrick[killer.PlayerId])
+                        {
+                            Tricker.willTrick[killer.PlayerId] = false;
+                            Main.PlayerStates[target.PlayerId].IsDead = true;
+                            Main.PlayerStates[target.PlayerId].deathReason = PlayerState.DeathReason.Trick;
+                            target.RpcExileV2();
+                            target.SetRealKiller(killer);
+                            killer.SetKillCooldown(Options.DefaultKillCooldown);
+                            return false;
+                        }
+                        break;
                     case CustomRoles.Vampire:
-                        if (!target.Is(CustomRoles.Bait))
+                        if (!target.Is(CustomRoles.Bait) ||!target.Is(CustomRoles.InSender))
                         { //キルキャンセル&自爆処理
                             killer.SetKillCooldown();
                             Main.BitPlayers.Add(target.PlayerId, (killer.PlayerId, 0f));
@@ -225,6 +248,8 @@ namespace TownOfHost
 
             if (RandomSpawn.CustomNetworkTransformPatch.NumOfTP.TryGetValue(__instance.PlayerId, out var num) && num > 2) RandomSpawn.CustomNetworkTransformPatch.NumOfTP[__instance.PlayerId] = 3;
             Camouflage.RpcSetSkin(target, ForceRevert: true);
+            if (!AmongUsClient.Instance.AmHost) return;
+            PlayerControl killer = __instance;
         }
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
@@ -245,23 +270,66 @@ namespace TownOfHost
             //When Bait is killed
             if (target.GetCustomRole() == CustomRoles.Bait && killer.PlayerId != target.PlayerId)
             {
-                if (target.Is(CustomRoles.JMadmate))
+                if (killer.Is(CustomRoles.Tricker))
                 {
-                    List<PlayerControl> allplayers = new();
-                    foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                    if (!Tricker.willTrick[killer.PlayerId])
                     {
-                        if (!p.Data.IsDead && !p.Is(CustomRoles.GM) && p.PlayerId != target.PlayerId)
-                            allplayers.Add(p);
+                        if (target.Is(CustomRoles.JMadmate))
+                        {
+                            List<PlayerControl> allplayers = new();
+                            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                            {
+                                if (!p.Data.IsDead && !p.Is(CustomRoles.GM) && p.PlayerId != target.PlayerId)
+                                    allplayers.Add(p);
+                            }
+                            var Reporter = allplayers[UnityEngine.Random.RandomRangeInt(0, allplayers.Count - 1)];
+                            Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
+                            new LateTask(() => Reporter?.CmdReportDeadBody(target.Data), 0.15f, "Bait of MadmateJ Random Report");
+                        }
+                        else
+                        {
+                            Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
+                            new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f, "Bait self Report");
+
+                        }
                     }
-                    var Reporter = allplayers[UnityEngine.Random.RandomRangeInt(0, allplayers.Count - 1)];
-                    Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
-                    new LateTask(() => Reporter?.CmdReportDeadBody(target.Data), 0.15f, "Bait of MadmateJ Random Report");
                 }
                 else
                 {
-                    Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
-                    new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f, "Bait self Report");
+                    if (target.Is(CustomRoles.JMadmate))
+                    {
+                        List<PlayerControl> allplayers = new();
+                        foreach (PlayerControl p in PlayerControl.AllPlayerControls)
+                        {
+                            if (!p.Data.IsDead && !p.Is(CustomRoles.GM) && p.PlayerId != target.PlayerId)
+                                allplayers.Add(p);
+                        }
+                        var Reporter = allplayers[UnityEngine.Random.RandomRangeInt(0, allplayers.Count - 1)];
+                        Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
+                        new LateTask(() => Reporter?.CmdReportDeadBody(target.Data), 0.15f, "Bait of MadmateJ Random Report");
+                    }
+                    else
+                    {
+                        Logger.Info(target?.Data?.PlayerName + "はJMadmateのBaitだった", "MurderPlayer");
+                        new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f, "Bait self Report");
 
+                    }
+                }
+            }
+            else if (target.GetCustomRole() == CustomRoles.InSender && killer.PlayerId != target.PlayerId)
+            {
+                if (killer.Is(CustomRoles.Tricker))
+                {
+                    if (!Tricker.willTrick[killer.PlayerId])
+                    {
+                        Logger.Info(target?.Data?.PlayerName + "がキルされました(インセンダー)", "MurderPlayer");
+                        new LateTask(() => target.CmdReportDeadBody(target.Data), 0.15f, "InSender Report");
+                    }
+                }
+                else
+                {
+                    Logger.Info(target?.Data?.PlayerName + "がキルされました(インセンダー)", "MurderPlayer");
+                    new LateTask(() => target.CmdReportDeadBody(target.Data), 0.15f, "InSender Report");
                 }
             }
             else
@@ -368,6 +436,7 @@ namespace TownOfHost
             if (shapeshifter.Is(CustomRoles.FireWorks)) FireWorks.ShapeShiftState(shapeshifter, shapeshifting);
             if (shapeshifter.Is(CustomRoles.Sniper)) Sniper.ShapeShiftCheck(shapeshifter, shapeshifting);
             if (shapeshifter.Is(CustomRoles.Reloader) && shapeshifting) Reloader.UseShapeShift(shapeshifter);
+            if (shapeshifter.Is(CustomRoles.Tricker) && shapeshifting) Tricker.UseShapeShift(shapeshifter);
             //変身解除のタイミングがずれて名前が直せなかった時のために強制書き換え
             if (!shapeshifting)
             {
@@ -455,18 +524,7 @@ namespace TownOfHost
             //=============================================
             //以下、ボタンが押されることが確定したものとする。
             //=============================================
-            foreach (PlayerControl p in PlayerControl.AllPlayerControls)
-            {
-                if (AmongUsClient.Instance.AmHost)
-                {
-                    if (p.Is(CustomRoles.AntiTeleporter))
-                    {
-                        Vector2 v = new(p.transform.position.x, p.transform.position.y);
-                        AntiTeleporter.LastPlace[p.PlayerId] = v;
-                    }
-                }
-            }
-
+            AntiTeleporter.SetLastPlace();
             Main.AllPlayerControls
                 .Where(pc => Main.CheckShapeshift.ContainsKey(pc.PlayerId))
                 .Do(pc => Camouflage.RpcSetSkin(pc, RevertToDefault: true));

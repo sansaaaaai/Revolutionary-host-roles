@@ -612,3 +612,25 @@
 "AntiTeleporter","AntiTeleporter","アンチテレポーター","通讯兵"
 "AntiTeleporterInfo","I don't want Teleport","絶対にテレポートしたくないでござる","我不想传送"
 "AntiTeleporterInfoLong","(Addons):\nThe Anti Teleport Modifier prevents the player from getting teleported to the Meeting Table if a body gets reported or an Emergency Meeting is called.\nThe player will start the round where the previous one ended (Emergency Meeting Call/Body Report).","(属性):\n会議や死体レポートなどが起こってもその後にテレポートせず、元居た場所からスタートします。","(附加效果):\n如果有尸体被报告或紧急会议被召集，通讯兵效果可以防止玩家被远程传送到会议桌。\n玩家将在上一回合结束时的位置继续（紧急会议/尸体报告）."
+
+"Tricker","Tricker","トリッカー"
+"Trick","Trick","トリック"
+"TrickerInfo","Show everyone your tricks!!","トリックをみんなに見せよう"
+"TrickerInfoLong","(Impostors):\nTrickers can kill a target without producing the target's corpse by pressing the kill button after shapeshifting.\n The tricker can only do the trick a set number of times.\nAnd if the tricker attempts to trick the bait, the effect of the bait is canceled.\n However, if he tries to trick Schrodinger's cat, it will be erased as is.","(インポスター陣営):\nトリッカーはシェイプシフトした後に\nキルボタンを押すことで\n「トリック」を発動し\nターゲットの死体を出さずに\nターゲットを殺すことができます。\nトリックは設定された回数しか出来ません。そして、トリッカーがベイトをトリックしようとした場合、ベイトの効果が打ち消されます。ただし、シュレディンガーの猫をトリックしようとした場合、そのまま消してしまいます。"
+"CanTrickCount","CanTrickCount","トリックができる回数"
+
+"InSender","Information sender","インセンダー"
+"InSenderInfo","That information feeds us.","その情報が糧となる"
+"InSenderInfoLong","(Crewmates):\nInformation sender develops its own meeting when it is killed.","(クルーメイト陣営):\nインセンダーはキルされると自分自身でミーティングを展開します。"
+
+"DeathReason.Trick","Trick","トリック"
+
+
+
+"#MainMenu"
+"Author","Author","製作者"
+"Developers","Developers","開発者"
+"sansai","sansai","山菜"
+"GKT","GKT","GKT"
+"NemuA","Nemu-a","ねむa"
+"haron","haron(harowin)","はろん(はろうぃん)"

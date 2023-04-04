@@ -257,7 +257,9 @@ namespace TownOfHost
             "SuffixMode.Streaming",
             "SuffixMode.Recording",
             "SuffixMode.RoomHost",
-            "SuffixMode.OriginalName"
+            "SuffixMode.OriginalName",
+            "SuffixMode.HostGM",
+            "SuffixMode.GMSetting"
         };
         public static readonly string[] RoleAssigningAlgorithms =
         {
@@ -361,6 +363,7 @@ namespace TownOfHost
             TimeThief.SetupCustomOption();
             EvilTracker.SetupCustomOption();
             Reloader.SetupCustomOption();
+            Tricker.SetupCustomOption();
             DefaultShapeshiftCooldown = FloatOptionItem.Create(5011, "DefaultShapeshiftCooldown", new(5f, 999f, 5f), 15f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds);
@@ -428,7 +431,7 @@ namespace TownOfHost
                 .SetValueFormat(OptionFormat.Seconds);
             SetupRoleOptions(20900, TabGroup.CrewmateRoles, CustomRoles.Dictator);
             SetupRoleOptions(21000, TabGroup.CrewmateRoles, CustomRoles.Seer);
-
+            SetupRoleOptions(500000, TabGroup.CrewmateRoles, CustomRoles.InSender);
             // Neutral
             SetupRoleOptions(50500, TabGroup.NeutralRoles, CustomRoles.Arsonist);
             ArsonistDouseTime = FloatOptionItem.Create(50510, "ArsonistDouseTime", new(1f, 10f, 1f), 3f, TabGroup.NeutralRoles, false).SetParent(CustomRoleSpawnChances[CustomRoles.Arsonist])
