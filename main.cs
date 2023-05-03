@@ -31,8 +31,8 @@ namespace TownOfHost
         public static readonly string ForkId = "RHR";
         // Discordボタンを表示するか / Show Discord Button (Default: true)
         public static readonly bool ShowDiscordButton = false;
-        // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/W5ug6hXB9V)
-        public static readonly string DiscordInviteUrl = "https://discord.gg/W5ug6hXB9V";
+        // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/PfaX8cTN)
+        public static readonly string DiscordInviteUrl = "https://discord.gg/PfaX8cTN";
         // ==========
         public const string OriginalForkId = "OriginalTOH"; // Don't Change The Value. / この値を変更しないでください。
         // == 認証設定 / Authentication Config ==
