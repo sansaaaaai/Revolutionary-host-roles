@@ -1,5 +1,5 @@
 # RevolutionaryHostRoles
-## About this mod
+## About this 
 This mod is based on [TownOfHost](https://github.com/tukasa0001/TownOfHost). <br>
 Please do not report bugs that occur in this mod to TownOfHost, as it will cause trouble for both parties.
 ## change point
