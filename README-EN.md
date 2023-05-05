@@ -15,7 +15,7 @@ Please do not contact us officially regarding any issues with this mod. <br>
 ## release
 
 Among Us version : **2023.03.28**
-**Fork the latest version of TownOfHost [here](https://github.com/tukasa0001/TownOfHost/releases/latest)**
+**Fork the latest version of TownOfHost [here](https://github.com/tukasa0001/TownOfHost/releases/tag/v4.1.2)**
 
 
 ## feature
