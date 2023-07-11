@@ -1,4 +1,5 @@
 # RevolutionaryHostRoles
+[English](https://github.com/sansaaaaai/Revolutionary-host-roles/blob/main/README-EN.md)
 ## この Mod について
 このMODは[TownOfHost](https://github.com/tukasa0001/TownOfHost)というMODを土台にして作った(以下Forkと呼びます)MODです。<br>
 このMODで起こったバグをTownOfHostに報告するのは両者ご迷惑がかかりますのでやめてください。
