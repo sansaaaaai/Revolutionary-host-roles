@@ -456,8 +456,8 @@ The number of times and cool time can be changed by setting.<br>
 | Name               |           |
 | ------------------ | ----------------- |
 | Reloader Kill Cooldown(s)
-|Number of times you can reload
-|Kill Cooldown(s) when reloading
+|Can Reload Count
+|KillCooldown after reload
 
 
 ## Madmate
@@ -747,6 +747,11 @@ the word contains prohibited characters
 
 ### Insender
 
+Team : Crewmates<br>
+Basis : Crewmate<br>
+
+Unlike baits, incenders "conduct their own" meetings when they are killed.
+
 
 ## Neutral
 
@@ -848,7 +853,6 @@ Crewmates may still win in this case by completing their tasks. Jackal and Impos
 ・ Auto mute is removed when impo is hung<br>
 
 ### Game Options
-
 | Name                |
 | ------------------- |
 | Kill Cooldown       |
@@ -856,6 +860,22 @@ Crewmates may still win in this case by completing their tasks. Jackal and Impos
 | Can Sabotage        |
 | Has Impostor Vision |
 
+
+### Jacalfellow
+
+Team : Neutral(Jackal)<br>
+Basis : Crewmate<br>
+
+Although it is a crew decision, I side with the jackals.<br>
+※A jackal camp version of the so-called Mad Mate.<br>
+Vent can be used, no task. One ability can be given by setting.<br>
+Vent can be used, no task. One ability can be given by setting.<br>
+### Game Options
+| Name                |
+| ------------------- |
+| Vent Cooldown
+| Can See Jackal
+| Jackal Fellow's Special Ability
 ### Jester
 
 Team : Neutral(Solo)<br>
