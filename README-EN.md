@@ -9,16 +9,15 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 
 ## Releases
 
-AmongUs Version: **2022.12.14**
+AmongUs Version: **2023.3.28**
+ Click [here](https://github.com/tukasa0001/TownOfHost/releases/latest) for the latest version of Fork original TownOfHost.
 
-**Latest Version: [Here](https://github.com/tukasa0001/TownOfHost/releases/latest)**
-
-Old Versions: [Here](https://github.com/tukasa0001/TownOfHost/releases)
+**Latest Version: [Here]([https://github.com/sansaaaaai/Revolutionary-host-roles/releases])**
 
 ## Features
 
 This mod only needs to be installed on the host's client to work, and works regardless of whether or not other client mods have been installed, and regardless of the type of terminal.<br>
-Unlike mods that use custom servers, there is no need to add servers by editing URLs or files.<br>
+You can enjoy additional positions simply by joining a room of hosts who have installed RevolutionaryHostRoles.<br>
 
 However, please note that the following restrictions apply.<br>
 
