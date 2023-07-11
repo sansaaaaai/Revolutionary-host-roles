@@ -438,6 +438,7 @@ Unique ability, tricks to make players disappear.<br>
 Shape shifting can be used to turn trick kills on and off.<br>
 
 #### Game Options
+
 | Name               |           |
 | ------------------ | ----------------- |
 | Tricker Kill Cooldown(s)
@@ -453,6 +454,7 @@ Unique ability, reloading, to reduce the kill cooldown to a set value.<br>
 The number of times and cool time can be changed by setting.<br>
 
 #### Game Options
+
 | Name               |           |
 | ------------------ | ----------------- |
 | Reloader Kill Cooldown(s)
@@ -853,6 +855,7 @@ Crewmates may still win in this case by completing their tasks. Jackal and Impos
 ・ Auto mute is removed when impo is hung<br>
 
 ### Game Options
+
 | Name                |
 | ------------------- |
 | Kill Cooldown       |
@@ -871,6 +874,7 @@ Although it is a crew decision, I side with the jackals.<br>
 Vent can be used, no task. One ability can be given by setting.<br>
 Vent can be used, no task. One ability can be given by setting.<br>
 ### Game Options
+
 | Name                |
 | ------------------- |
 | Vent Cooldown
