@@ -429,6 +429,20 @@ The Mafias can initially use vents and sabotage, but cannot kill (still have a b
 They will be able to kill after all Impostors except them are all gone.<br>
 
 
+## Tricker
+
+Team : Impostors<br>
+Basis : Impostor<br>
+
+Unique ability, tricks to make players disappear.<br>
+Shape shifting can be used to turn trick kills on and off.<br>
+
+#### Game Options
+| Name               |           |
+| ------------------ | --------- |
+| Tricker Kill Cooldown(s)
+|Number of times you can do the trick
+
 ## Madmate
 
 There are common options for Madmates.
