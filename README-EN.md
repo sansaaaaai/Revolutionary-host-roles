@@ -439,9 +439,26 @@ Shape shifting can be used to turn trick kills on and off.<br>
 
 #### Game Options
 | Name               |           |
-| ------------------ | --------- |
+| ------------------ | ----------------- |
 | Tricker Kill Cooldown(s)
 |Number of times you can do the trick
+
+
+## Reloader
+
+Team : Impostors<br>
+Basis : Impostor<br>
+
+Unique ability, reloading, to reduce the kill cooldown to a set value.<br>
+The number of times and cool time can be changed by setting.<br>
+
+#### Game Options
+| Name               |           |
+| ------------------ | ----------------- |
+| Reloader Kill Cooldown(s)
+|Number of times you can reload
+|Kill Cooldown(s) when reloading
+
 
 ## Madmate
 
@@ -726,6 +743,9 @@ the word contains prohibited characters
 | Name            |
 | --------------- |
 | Freeze Duration |
+
+
+### Insender
 
 
 ## Neutral
