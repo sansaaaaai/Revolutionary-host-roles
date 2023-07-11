@@ -195,15 +195,17 @@ Example:
 | [EvilTracker](#EvilTracker)         | [Dictator](#Dictator)             | [Egoist](#Egoist)                 |           |
 | [Evil Watcher](#Watcher)            | [Doctor](#Doctor)                 | [Executioner](#Executioner)       |           |
 | [FireWorks](#FireWorks)             | [Lighter](#Lighter)               | [Jackal](#Jackal)                 |           |
-| [Mare](#Mare)                       | [Mayor](#Mayor)                   | [Jester](#Jester)                 |           |
-| [Puppeteer](#Puppeteer)             | [Nice Watcher](#Watcher)          | [Lovers](#Lovers)                 |           |
-| [SerialKiller](#SerialKiller)       | [SabotageMaster](#SabotageMaster) | [Opportunist](#Opportunist)       |           |
-| [Sniper](#Sniper)                   | [Seer](#Seer)                     | [Terrorist](#Terrorist)           |           |
-| [TimeThief](#TimeThief)             | [Sheriff](#Sheriff)               | [SchrodingerCat](#SchrodingerCat) |           |
-| [Vampire](#Vampire)                 | [Snitch](#Snitch)                 |                                   |           |
+| [Mare](#Mare)                       | [Mayor](#Mayor)                   | [Jackalfellow](#Jackalfellow)                 |           |
+| [Puppeteer](#Puppeteer)             | [Nice Watcher](#Watcher)          | [Jester](#Jester)                 |           |
+| [SerialKiller](#SerialKiller)       | [SabotageMaster](#SabotageMaster) | [Lovers](#Lovers)                 |           |
+| [Sniper](#Sniper)                   | [Seer](#Seer)                     | [Opportunist](#Opportunist)       |           |
+| [TimeThief](#TimeThief)             | [Sheriff](#Sheriff)               | [Terrorist](#Terrorist)           |           |
+| [Vampire](#Vampire)                 | [Snitch](#Snitch)                 | [SchrodingerCat](#SchrodingerCat) |           |
 | [Warlock](#Warlock)                 | [SpeedBooster](#SpeedBooster)     |                                   |           |
 | [Witch](#Witch)                     | [Beartrap](#Beartrap)             |                                   |           |
-| [Mafia](#Mafia)                     |                                   |                                   |           |
+| [Mafia](#Mafia)                     | [Insender](#Insender)|                                   |           |
+| [Tricker](#Tricker)                 |                                   |                                   |           |
+| [Reloader](#Reloader)               |                                   |                                   |           |
 | [Madmate](#Madmate)                 |                                   |                                   |           |
 | [MadGuardian](#MadGuardian)         |                                   |                                   |           |
 | [MadSnitch](#MadSnitch)             |                                   |                                   |           |
