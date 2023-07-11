@@ -101,7 +101,7 @@ Also, you can break lines by writing `\n` in the sentence like `tag:line breaks 
 
 #### Special Tags
 There are special tags that can be sent automatically according to the scene.<br>
-For example: `welcome:This room is using TownOfHost.`
+For example: `welcome:This room is using RevolutionaryHostRoles.`
 
 | Tag            | Scene                             | Target                     |
 | -------------- | --------------------------------- | -------------------------- |
