@@ -12,7 +12,7 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 AmongUs Version: **2023.3.28**
  Click [here](https://github.com/tukasa0001/TownOfHost/releases/latest) for the latest version of Fork original TownOfHost.
 
-**Latest Version: [Here]([https://github.com/sansaaaaai/Revolutionary-host-roles/releases])**
+**Latest Version: [Here](https://github.com/sansaaaaai/Revolutionary-host-roles/latest)**
 
 ## Features
 
