@@ -198,7 +198,7 @@ BANされたプレイヤーは`./RHR_DATA/BanList.txt`に`フレンドコード,
 | [バウンティハンター](#BountyHunterバウンティハンター)                | [ベイト](#Baitベイト)                                       | [アーソニスト](#Arsonistアーソニスト)                       | [GM](#GM) |
 | [イビルトラッカー](#EvilTrackerイビルトラッカー)                     | [ディクテーター](#Dictatorディクテーター)                   | [エゴイスト](#Egoistエゴイスト)                             |           |
 | [イビルウォッチャー](#Watcherウォッチャー)                           | [ドクター](#Doctorドクター)                                 | [エクスキューショナー](#Executionerエクスキューショナー)    |           |
-| [メアー](#Mareメアー)                                                | [メイヤー](#Mayorメイヤー)                                  | [ジャッカルフェロー](#JackalFelllowジャッカルフェロー)                             |           |
+| [メアー](#Mareメアー)                                                | [メイヤー](#Mayorメイヤー)                                  | [ジャッカルフェロー](#Jackalfellowジャッカルフェロー)                             |           |
 | [パペッティア](#Puppeteerパペッティア)                               | [ナイスウォッチャー](#Watcherウォッチャー)                  | [ジェスター](#Jesterジェスター)                              |           |
 | [シリアルキラー](#SerialKillerシリアルキラー)                        | [サボタージュマスター](#SabotageMasterサボタージュマスター) | [恋人](#Lovers恋人)                                          |           |
 | [スナイパー](#Sniperスナイパー)                                      | [シーア](#Seerシーア)                                       | [オポチュニスト](#Opportunistオポチュニスト)                  |           |
