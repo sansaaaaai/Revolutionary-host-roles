@@ -5,6 +5,9 @@ using HarmonyLib;
 using Hazel;
 using UnityEngine;
 
+using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Impostor;
+
 namespace TownOfHost
 {
     class RandomSpawn
@@ -32,25 +35,15 @@ namespace TownOfHost
                     if (NumOfTP[player.PlayerId] == 2)
                     {
                         if (Main.NormalOptions.MapId != 4) return; //マップがエアシップじゃなかったらreturn
+                        if (player.Is(CustomRoles.Penguin))
+                        {
+                            var penguin = player.GetRoleClass() as Penguin;
+                            penguin?.OnSpawnAirship();
+                        }
                         player.RpcResetAbilityCooldown();
                         if (Options.FixFirstKillCooldown.GetBool() && !MeetingStates.MeetingCalled) player.SetKillCooldown(Main.AllPlayerKillCooldown[player.PlayerId]);
-                        if (Options.RandomSpawn.GetBool()) new AirshipSpawnMap().RandomTeleport(player);
-                        if (player.Is(CustomRoles.AntiTeleporter))
-                        {
-                         
-                            Vector2 v = new(1, 1);
-                            if (AntiTeleporter.LastPlace.ContainsKey(player.PlayerId))
-                            {
-                                if (AntiTeleporter.LastPlace[player.PlayerId] != v)
-                                    TP(player.NetTransform, AntiTeleporter.LastPlace[player.PlayerId]);
-                            }
-                            else AntiTeleporter.LastPlace.Add(player.PlayerId, new Vector2(player.transform.position.x, player.transform.position.y));
-                            //テレポートしてない(初手会議)
-                            if (!AntiTeleporter.LastPlace.ContainsKey(player.PlayerId)) AntiTeleporter.LastPlace.Add(player.PlayerId, new Vector2(player.transform.position.x, player.transform.position.y));
-                            else AntiTeleporter.LastPlace[player.PlayerId] = new Vector2(player.transform.position.x, player.transform.position.y);
-                            AntiTeleporter.SendRPC(player.PlayerId);
-                        }
-
+                        if (!Options.RandomSpawn.GetBool()) return; //ランダムスポーンが無効ならreturn
+                        new AirshipSpawnMap().RandomTeleport(player);
                     }
                 }
             }
