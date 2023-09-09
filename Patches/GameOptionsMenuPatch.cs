@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 using HarmonyLib;
-using UnhollowerBaseLib;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using static TownOfHost.Translator;
 using Object = UnityEngine.Object;
@@ -39,6 +39,12 @@ namespace TownOfHost
                     case StringNames.GameKillCooldown:
                         ob.Cast<NumberOption>().ValidRange = new FloatRange(0, 180);
                         break;
+                    case StringNames.GameNumImpostors:
+                        if (DebugModeManager.IsDebugMode)
+                        {
+                            ob.Cast<NumberOption>().ValidRange.min = 0;
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -58,37 +64,13 @@ namespace TownOfHost
             var roleTab = GameObject.Find("RoleTab");
             var gameTab = GameObject.Find("GameTab");
             List<GameObject> tabs = new() { gameTab, roleTab };
-            foreach (TabGroup tab in Enum.GetValues(typeof(TabGroup)))//全てのtabを取得
+
+            foreach (var tab in EnumHelper.GetAllValues<TabGroup>())
             {
-                string tabcolor = "";
-                switch (tab)
-                {
-                    case TabGroup.MainSettings:
-                        tabcolor = "#ffff00";
-                        break;
-                    case TabGroup.CrewmateRoles:
-                        tabcolor = "#00ffff";
-                        break;
-                    case TabGroup.ImpostorRoles:
-                        tabcolor = "#ff0000";
-                        break;
-                    case TabGroup.NeutralRoles:
-                        tabcolor = "#808080";
-                        break;
-                    case TabGroup.Addons:
-                        tabcolor = "#ff00ff";
-                        break;
-                    case TabGroup.BothRoles:
-                        tabcolor = "#00ff7f";
-                        break;
-                    default:
-                        tabcolor = "#ffffff";
-                        break;
-                }
                 var obj = gameSettings.transform.parent.Find(tab + "Tab");
                 if (obj != null)
                 {
-                    obj.transform.FindChild("../../GameGroup/Text").GetComponent<TMPro.TextMeshPro>().SetText($"{tabcolor}" + GetString("TabGroup." + tab) + "</color>");
+                    obj.transform.FindChild("../../GameGroup/Text").GetComponent<TMPro.TextMeshPro>().SetText(GetString("TabGroup." + tab));
                     continue;
                 }
 
@@ -168,35 +150,10 @@ namespace TownOfHost
         public static void Postfix(GameOptionsMenu __instance)
         {
             if (__instance.transform.parent.parent.name == "Game Settings") return;
-            foreach (var tab in Enum.GetValues(typeof(TabGroup)))
+            foreach (var tab in EnumHelper.GetAllValues<TabGroup>())
             {
-                string tabcolor = "";
-                switch (tab)
-                {
-                    case TabGroup.MainSettings:
-                        tabcolor = "#ffff00";
-                        break;
-                    case TabGroup.CrewmateRoles:
-                        tabcolor = "#00ffff";
-                        break;
-                    case TabGroup.ImpostorRoles:
-                        tabcolor = "#ff0000";
-                        break;
-                    case TabGroup.NeutralRoles:
-                        tabcolor = "#808080";
-                        break;
-                    case TabGroup.Addons:
-                        tabcolor = "#ff00ff";
-                        break;
-                    case TabGroup.BothRoles:
-                        tabcolor = "#00ff7f";
-                        break;
-                    default:
-                        tabcolor = "#ffffff";
-                        break;
-                }
                 if (__instance.transform.parent.parent.name != tab + "Tab") continue;
-                __instance.transform.FindChild("../../GameGroup/Text").GetComponent<TMPro.TextMeshPro>().SetText($"<color={tabcolor}>" + GetString("TabGroup." + tab) + "</color>");
+                __instance.transform.FindChild("../../GameGroup/Text").GetComponent<TMPro.TextMeshPro>().SetText(GetString("TabGroup." + tab));
 
                 _timer += Time.deltaTime;
                 if (_timer < 0.1f) return;
@@ -294,7 +251,7 @@ namespace TownOfHost
             var option = OptionItem.AllOptions.FirstOrDefault(opt => opt.OptionBehaviour == __instance);
             if (option == null) return true;
 
-            option.SetValue(option.CurrentValue + 1);
+            option.SetValue(option.CurrentValue + (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 5 : 1));
             return false;
         }
     }
@@ -307,7 +264,7 @@ namespace TownOfHost
             var option = OptionItem.AllOptions.FirstOrDefault(opt => opt.OptionBehaviour == __instance);
             if (option == null) return true;
 
-            option.SetValue(option.CurrentValue - 1);
+            option.SetValue(option.CurrentValue - (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 5 : 1));
             return false;
         }
     }

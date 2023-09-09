@@ -1,8 +1,8 @@
 using System.Globalization;
 using HarmonyLib;
 using InnerNet;
-using TownOfHost.Modules;
 using UnityEngine;
+using TownOfHost.Modules;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -20,9 +20,10 @@ namespace TownOfHost
                 Logger.SendInGame(message);
                 return false;
             }
-            if (ModUpdater.isBroken || ModUpdater.hasUpdate)
+            if (ModUpdater.isBroken || ModUpdater.hasUpdate || !VersionChecker.IsSupported)
             {
                 var message = "";
+                if (!VersionChecker.IsSupported) message = GetString("UnsupportedVersion");
                 if (ModUpdater.isBroken) message = GetString("ModBrokenMessage");
                 if (ModUpdater.hasUpdate) message = GetString("CanNotJoinPublicRoomNoLatest");
                 Logger.Info(message, "MakePublicPatch");
@@ -37,7 +38,7 @@ namespace TownOfHost
     {
         public static void Postfix(MMOnlineManager __instance)
         {
-            if (!(ModUpdater.hasUpdate || ModUpdater.isBroken)) return;
+            if (!(ModUpdater.hasUpdate || ModUpdater.isBroken || !VersionChecker.IsSupported)) return;
             var obj = GameObject.Find("FindGameButton");
             if (obj)
             {
@@ -46,9 +47,21 @@ namespace TownOfHost
                 var textObj = Object.Instantiate<TMPro.TextMeshPro>(obj.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>());
                 textObj.transform.position = new Vector3(1f, -0.3f, 0);
                 textObj.name = "CanNotJoinPublic";
-                var message = ModUpdater.isBroken ? $"<size=2>{Utils.ColorString(Color.red, GetString("ModBrokenMessage"))}</size>"
-                    : $"<size=2>{Utils.ColorString(Color.red, GetString("CanNotJoinPublicRoomNoLatest"))}</size>";
-                new LateTask(() => { textObj.text = message; }, 0.01f, "CanNotJoinPublic");
+                textObj.DestroyTranslator();
+                string message = "";
+                if (ModUpdater.hasUpdate)
+                {
+                    message = GetString("CanNotJoinPublicRoomNoLatest");
+                }
+                else if (ModUpdater.isBroken)
+                {
+                    message = GetString("ModBrokenMessage");
+                }
+                else if (!VersionChecker.IsSupported)
+                {
+                    message = GetString("UnsupportedVersion");
+                }
+                textObj.text = $"<size=2>{Utils.ColorString(Color.red, message)}</size>";
             }
         }
     }
@@ -70,7 +83,7 @@ namespace TownOfHost
         public static void Prefix(ref bool canOnline)
         {
 #if DEBUG
-           // if (CultureInfo.CurrentCulture.Name != "ja-JP") canOnline = false;
+            if (CultureInfo.CurrentCulture.Name != "ja-JP") canOnline = false;
 #endif
         }
     }
@@ -84,7 +97,6 @@ namespace TownOfHost
             __instance.BanButton.gameObject.SetActive(AmongUsClient.Instance.CanBan());
             __instance.KickButton.gameObject.SetActive(AmongUsClient.Instance.CanKick());
             __instance.MenuButton.gameObject.SetActive(show);
-            //__instance.ho.SetActive(show);
             return false;
         }
     }
@@ -103,21 +115,9 @@ namespace TownOfHost
         public static void Prefix(InnerNet.InnerNetClient __instance, int clientId, bool ban)
         {
             if (!AmongUsClient.Instance.AmHost) return;
-            if (ban) BanManager.AddBanPlayer(AmongUsClient.Instance.GetClient(clientId));
+            if (ban) BanManager.AddBanPlayer(AmongUsClient.Instance.GetRecentClient(clientId));
         }
     }
-    [HarmonyPatch(typeof(ResolutionManager), nameof(ResolutionManager.SetResolution))]
-    class SetResolutionManager
-    {
-        public static void Postfix()
-        {
-            if (MainMenuManagerPatch.discordButton != null)
-                MainMenuManagerPatch.discordButton.transform.position = Vector3.Reflect(MainMenuManagerPatch.template.transform.position, Vector3.left);
-            if (MainMenuManagerPatch.updateButton != null)
-                MainMenuManagerPatch.updateButton.transform.position = MainMenuManagerPatch.template.transform.position + new Vector3(0.25f, 0.75f);
-        }
-    }
-
     [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.SendAllStreamedObjects))]
     class InnerNetObjectSerializePatch
     {
