@@ -1,153 +1,153 @@
-
 using System.Globalization;
+using System.Text;
 using HarmonyLib;
-using Sentry;
+using TMPro;
 using UnityEngine;
+
+using TownOfHost.Modules;
+using TownOfHost.Roles.Core;
+using TownOfHost.Templates;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
 {
-    [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
-    class PingTrackerUpdatePatch
+    [HarmonyPatch]
+    public static class CredentialsPatch
     {
-        static void Postfix(PingTracker __instance)
-        {
-            __instance.text.alignment = TMPro.TextAlignmentOptions.TopRight;
-            __instance.text.text += Main.credentialsText;
-            if (Options.NoGameEnd.GetBool()) __instance.text.text += $"\r\n" + Utils.ColorString(Color.red, GetString("NoGameEnd"));
-            if (Options.IsStandardHAS) __instance.text.text += $"\r\n" + Utils.ColorString(Color.yellow, GetString("StandardHAS"));
-            if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) __instance.text.text += $"\r\n" + Utils.ColorString(Color.red, GetString("HideAndSeek"));
-            if (!GameStates.IsModHost) __instance.text.text += $"\r\n" + Utils.ColorString(Color.red, GetString("Warning.NoModHost"));
-            if (DebugModeManager.IsDebugMode) __instance.text.text += "\r\n" + Utils.ColorString(Color.green, "デバッグモード");
+        public static SpriteRenderer TohLogo { get; private set; }
 
-            var offset_x = 1.2f; //右端からのオフセット
-            if (HudManager.InstanceExists && HudManager._instance.Chat.ChatButton.active) offset_x += 0.8f; //チャットボタンがある場合の追加オフセット
-            if (FriendsListManager.InstanceExists && FriendsListManager._instance.FriendsListButton.Button.active) offset_x += 0.8f; //フレンドリストボタンがある場合の追加オフセット
-            __instance.GetComponent<AspectPosition>().DistanceFromEdge = new Vector3(offset_x, 0f, 0f);
-        /*
+        [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
+        class PingTrackerUpdatePatch
+        {
+            static StringBuilder sb = new();
+            static void Postfix(PingTracker __instance)
+            {
+                __instance.text.alignment = TextAlignmentOptions.TopRight;
+
+                sb.Clear();
+
+                sb.Append("\r\n").Append(Main.credentialsText);
+
+                if (Options.NoGameEnd.GetBool()) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("NoGameEnd")));
+                if (Options.IsStandardHAS) sb.Append($"\r\n").Append(Utils.ColorString(Color.yellow, GetString("StandardHAS")));
+                if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("HideAndSeek")));
+                if (!GameStates.IsModHost) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("Warning.NoModHost")));
+                if (DebugModeManager.IsDebugMode) sb.Append("\r\n").Append(Utils.ColorString(Color.green, "デバッグモード"));
+
+                var offset_x = 1.2f; //右端からのオフセット
+                if (HudManager.InstanceExists && HudManager._instance.Chat.chatButton.active) offset_x += 0.8f; //チャットボタンがある場合の追加オフセット
+                if (FriendsListManager.InstanceExists && FriendsListManager._instance.FriendsListButton.Button.active) offset_x += 0.8f; //フレンドリストボタンがある場合の追加オフセット
+                __instance.GetComponent<AspectPosition>().DistanceFromEdge = new Vector3(offset_x, 0f, 0f);
+
+                if (GameStates.IsLobby)
+                {
+                    if (Options.IsStandardHAS && !CustomRoles.Sheriff.IsEnable() && !CustomRoles.SerialKiller.IsEnable() && CustomRoles.Egoist.IsEnable())
+                        sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("Warning.EgoistCannotWin")));
+                }
+
+                __instance.text.text += sb.ToString();
+            }
+        }
+        [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
+        class VersionShowerStartPatch
+        {
+            static TextMeshPro SpecialEventText;
+            static void Postfix(VersionShower __instance)
+            {
+                TMPTemplate.SetBase(__instance.text);
+                Main.credentialsText = $"<color={Main.ModColor}>{Main.ModName}</color> v{Main.PluginVersion}";
 #if DEBUG
-            __instance.text.text += $"\n({PlayerControl.LocalPlayer.transform.position.x},{PlayerControl.LocalPlayer.transform.position.y},{PlayerControl.LocalPlayer.transform.position.z})";
+                Main.credentialsText += $"\r\n<color={Main.ModColor}>{ThisAssembly.Git.Branch}({ThisAssembly.Git.Commit})</color>";
 #endif
-       */
-            if (!GameStates.IsLobby) return;
-            if (Options.IsStandardHAS && !CustomRoles.Sheriff.IsEnable() && !CustomRoles.SerialKiller.IsEnable() && CustomRoles.Egoist.IsEnable())
-                __instance.text.text += $"\r\n" + Utils.ColorString(Color.red, GetString("Warning.EgoistCannotWin"));
+                var credentials = TMPTemplate.Create(
+                    "TOHCredentialsText",
+                    Main.credentialsText,
+                    fontSize: 2f,
+                    alignment: TextAlignmentOptions.Right,
+                    setActive: true);
+                credentials.transform.position = new Vector3(1f, 2.65f, -2f);
 
-        }
-    }
-    [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
-    class VersionShowerStartPatch
-    {
-        static TMPro.TextMeshPro SpecialEventText;
-        public static string Authors = Utils.ColorString(Color.yellow, GetString("Author"));
-        public static string Developers = Utils.ColorString(Color.blue, GetString("Developers"));
-        public static string Sansai = Utils.ColorString(Color.green, GetString("sansai"));
-        public static string GKT = Utils.ColorString(Palette.Orange, GetString("GKT"));
-        public static string NemuA = Utils.ColorString(Color.red, GetString("NemuA"));
-        public static string Haron = "<color=#00fa9a>" + GetString("haron") + "</color>";
-        static void Postfix(VersionShower __instance)
-        {
-            Main.credentialsText = $"\r\n<color={Main.ModColor}>{Main.ModName}</color> v{Main.PluginVersion}";
-#if DEBUG
-            //Main.credentialsText += $"\r\n<color={Main.ModColor}>{ThisAssembly.Git.Branch}({ThisAssembly.Git.Commit})</color>";
-#endif
-            var credentials = Object.Instantiate(__instance.text);
-            credentials.text = Main.credentialsText;
-            credentials.alignment = TMPro.TextAlignmentOptions.TopRight;
-            credentials.transform.position = new Vector3(4.6f, 3.2f, 0);
+                ErrorText.Create(__instance.text);
+                if (Main.hasArgumentException && ErrorText.Instance != null)
+                {
+                    ErrorText.Instance.AddError(ErrorCode.Main_DictionaryError);
+                }
 
-            ErrorText.Create(__instance.text);
-            if (Main.hasArgumentException && ErrorText.Instance != null)
-            {
-                ErrorText.Instance.AddError(ErrorCode.Main_DictionaryError);
+                VersionChecker.Check();
+
+                if (SpecialEventText == null && TohLogo != null)
+                {
+                    SpecialEventText = TMPTemplate.Create(
+                        "SpecialEventText",
+                        "",
+                        Color.white,
+                        alignment: TextAlignmentOptions.Center,
+                        parent: TohLogo.transform);
+                    SpecialEventText.name = "SpecialEventText";
+                    SpecialEventText.fontSizeMin = 3f;
+                    SpecialEventText.transform.localPosition = new Vector3(0f, 0.8f, 0f);
+                }
+                if (SpecialEventText != null)
+                {
+                    SpecialEventText.enabled = TitleLogoPatch.amongUsLogo != null;
+                    SpecialEventText.gameObject.SetActive(true);
+                }
+                if (Main.IsInitialRelease)
+                {
+                    SpecialEventText.text = $"Happy Birthday to {Main.ModName}!";
+                    if (ColorUtility.TryParseHtmlString(Main.ModColor, out var col))
+                    {
+                        SpecialEventText.color = col;
+                    }
+                }
+                if (Main.IsChristmas && CultureInfo.CurrentCulture.Name == "ja-JP")
+                {
+                    //このソースコ―ドを見た人へ。口外しないでもらえると嬉しいです...
+                    //To anyone who has seen this source code. I would appreciate it if you would keep your mouth shut...
+                    //みてしまったよ
+                    SpecialEventText.text = "何とは言いませんが、特別な日ですね。\n<size=15%>\n\n末永く爆発しろ</size>";
+                    SpecialEventText.color = Utils.GetRoleColor(CustomRoles.Lovers);
+                }
             }
-
-            if (SpecialEventText == null)
-            {
-                SpecialEventText = Object.Instantiate(__instance.text);
-                SpecialEventText.text = "";
-                SpecialEventText.color = Color.white;
-                SpecialEventText.fontSize += 2.5f;
-                SpecialEventText.alignment = TMPro.TextAlignmentOptions.Top;
-                SpecialEventText.transform.position = new Vector3(0, 0.5f, 0);
-            }
-            SpecialEventText.enabled = TitleLogoPatch.amongUsLogo != null;
-            if (Main.IsInitialRelease)
-            {
-                SpecialEventText.text = $"Happy Birthday to {Main.ModName}!";
-                ColorUtility.TryParseHtmlString(Main.ModColor, out var col);
-                SpecialEventText.color = col;
-            }
-            if (Main.IsChristmas && CultureInfo.CurrentCulture.Name == "ja-JP")
-            {
-                //このソースコ―ドを見た人へ。口外しないでもらえると嬉しいです...
-                //To anyone who has seen this source code. I would appreciate it if you would keep your mouth shut...
-                SpecialEventText.text = "何とは言いませんが、特別な日ですね。\n<size=15%>\n\n末永く爆発しろ</size>";
-                SpecialEventText.color = Utils.GetRoleColor(CustomRoles.Lovers);
-            }
-
-
-
-            var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
-            if (amongUsLogo == null) return;
-            var langId = TranslationController.InstanceExists ? TranslationController.Instance.currentLanguage.languageID : SupportedLangs.English;
-            /*=============製作者の名前=====================*/
-            var credentials_2 = UnityEngine.Object.Instantiate<TMPro.TextMeshPro>(__instance.text);
-            credentials_2.transform.position = new Vector3(0, 334f, 0);
-            string credentialsText = "";
-            credentialsText += "";
-            credentials_2.SetText(credentialsText);
-
-            credentials_2.alignment = TMPro.TextAlignmentOptions.Center;
-            credentials_2.fontSize *= 0.9f;
-
-            var RHRName = UnityEngine.Object.Instantiate(credentials_2);
-            RHRName.transform.position = new Vector3(0, -0.2f, 0);
-            RHRName.SetText(string.Format($"{(langId != SupportedLangs.Japanese ? "<size=125%>" : "<size=100%>")}" + Authors + " : " + Sansai + "\n" + Developers + " : " + Sansai + " " + Haron + " " + GKT + " " + NemuA + "</size>"));
-
-            credentials.transform.SetParent(amongUsLogo.transform);
-            RHRName.transform.SetParent(amongUsLogo.transform);
-            /*=============製作者の名前=====================*/
-
-        }
-    }
-
-    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-    class TitleLogoPatch
-    {
-        public static GameObject amongUsLogo;
-        static void Postfix(MainMenuManager __instance)
-        {
-            if ((amongUsLogo = GameObject.Find("bannerLogo_AmongUs")) != null)
-            {
-                amongUsLogo.transform.localScale *= 0.4f;
-                amongUsLogo.transform.position += Vector3.up * 0.25f;
-            }
-
-            var tohLogo = new GameObject("titleLogo_TOH");
-            tohLogo.transform.position = Vector3.up;
-            tohLogo.transform.localScale *= 1.2f;
-            var renderer = tohLogo.AddComponent<SpriteRenderer>();
-            renderer.sprite = Utils.LoadSprite("TownOfHost.Resources.RHRlogo.png", 300f);
         }
 
-    }
-    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
-    class ModManagerLateUpdatePatch
-    {
-        public static void Prefix(ModManager __instance)
+        [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
+        class TitleLogoPatch
         {
-            __instance.ShowModStamp();
+            public static GameObject amongUsLogo;
 
-            LateTask.Update(Time.deltaTime);
-            CheckMurderPatch.Update();
+            [HarmonyPriority(Priority.VeryHigh)]
+            static void Postfix(MainMenuManager __instance)
+            {
+                amongUsLogo = GameObject.Find("LOGO-AU");
+
+                var rightpanel = __instance.gameModeButtons.transform.parent;
+                var logoObject = new GameObject("titleLogo_TOH");
+                var logoTransform = logoObject.transform;
+                TohLogo = logoObject.AddComponent<SpriteRenderer>();
+                logoTransform.parent = rightpanel;
+                logoTransform.localPosition = new(0f, 0.15f, 1f);
+                logoTransform.localScale *= 1.2f;
+                TohLogo.sprite = Utils.LoadSprite("TownOfHost.Resources.RHR-logo.png", 300f);
+            }
         }
-        public static void Postfix(ModManager __instance)
+        [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
+        class ModManagerLateUpdatePatch
         {
-            var offset_y = HudManager.InstanceExists ? 1.6f : 0.9f;
-            __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(
-                __instance.localCamera, AspectPosition.EdgeAlignments.RightTop,
-                new Vector3(0.4f, offset_y, __instance.localCamera.nearClipPlane + 0.1f));
+            public static void Prefix(ModManager __instance)
+            {
+                __instance.ShowModStamp();
+
+                LateTask.Update(Time.deltaTime);
+                CheckMurderPatch.Update();
+            }
+            public static void Postfix(ModManager __instance)
+            {
+                var offset_y = HudManager.InstanceExists ? 1.6f : 0.9f;
+                __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(
+                    __instance.localCamera, AspectPosition.EdgeAlignments.RightTop,
+                    new Vector3(0.4f, offset_y, __instance.localCamera.nearClipPlane + 0.1f));
+            }
         }
     }
 }

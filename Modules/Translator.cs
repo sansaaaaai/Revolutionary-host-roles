@@ -5,13 +5,17 @@ using System.Linq;
 using System.Text;
 using Csv;
 using HarmonyLib;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using TownOfHost.Attributes;
 
 namespace TownOfHost
 {
     public static class Translator
     {
         public static Dictionary<string, Dictionary<int, string>> translateMaps;
-        public const string LANGUAGE_FOLDER_NAME = "LanguageRHR";
+        public const string LANGUAGE_FOLDER_NAME = "Language";
+
+        [PluginModuleInitializer]
         public static void Init()
         {
             Logger.Info("Language Dictionary Initialize...", "Translator");
@@ -54,10 +58,10 @@ namespace TownOfHost
 
             // 翻訳テンプレートの作成
             CreateTemplateFile();
-            foreach (var lang in Enum.GetValues(typeof(SupportedLangs)))
+            foreach (var lang in EnumHelper.GetAllValues<SupportedLangs>())
             {
                 if (File.Exists(@$"./{LANGUAGE_FOLDER_NAME}/{lang}.dat"))
-                    LoadCustomTranslation($"{lang}.dat", (SupportedLangs)lang);
+                    LoadCustomTranslation($"{lang}.dat", lang);
             }
         }
 
@@ -95,8 +99,16 @@ namespace TownOfHost
                     };
                 }
             }
+            if (!translateMaps.ContainsKey(str)) //translateMapsにない場合、StringNamesにあれば取得する
+            {
+                var stringNames = EnumHelper.GetAllValues<StringNames>().Where(x => x.ToString() == str);
+                if (stringNames != null && stringNames.Any())
+                    res = GetString(stringNames.FirstOrDefault());
+            }
             return res;
         }
+        public static string GetString(StringNames stringName)
+            => DestroyableSingleton<TranslationController>.Instance.GetString(stringName, new Il2CppReferenceArray<Il2CppSystem.Object>(0));
         public static string GetRoleString(string str)
         {
             var CurrentLanguage = TranslationController.Instance.currentLanguage.languageID;
@@ -116,7 +128,7 @@ namespace TownOfHost
                 Logger.Info($"カスタム翻訳ファイル「{filename}」を読み込み", "LoadCustomTranslation");
                 using StreamReader sr = new(path, Encoding.GetEncoding("UTF-8"));
                 string text;
-                string[] tmp = { };
+                string[] tmp = Array.Empty<string>();
                 while ((text = sr.ReadLine()) != null)
                 {
                     tmp = text.Split(":");
@@ -141,12 +153,24 @@ namespace TownOfHost
 
         private static void CreateTemplateFile()
         {
-            var text = "";
-            foreach (var title in translateMaps) text += $"{title.Key}:\n";
-            File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/template.dat", text);
-            text = "";
-            foreach (var title in translateMaps) text += $"{title.Key}:{title.Value[0].Replace("\n", "\\n").Replace("\r", "\\r")}\n";
-            File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/template_English.dat", text);
+            var sb = new StringBuilder();
+            foreach (var title in translateMaps) sb.Append($"{title.Key}:\n");
+            File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/template.dat", sb.ToString());
+            sb.Clear();
+            foreach (var title in translateMaps) sb.Append($"{title.Key}:{title.Value[0].Replace("\n", "\\n").Replace("\r", "\\r")}\n");
+            File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/template_English.dat", sb.ToString());
+        }
+        public static void ExportCustomTranslation()
+        {
+            LoadLangs();
+            var sb = new StringBuilder();
+            var lang = TranslationController.Instance.currentLanguage.languageID;
+            foreach (var title in translateMaps)
+            {
+                if (!title.Value.TryGetValue((int)lang, out var text)) text = "";
+                sb.Append($"{title.Key}:{text.Replace("\n", "\\n").Replace("\r", "\\r")}\n");
+            }
+            File.WriteAllText(@$"./{LANGUAGE_FOLDER_NAME}/export_{lang}.dat", sb.ToString());
         }
     }
 }

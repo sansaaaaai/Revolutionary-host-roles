@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Hazel;
 
+using TownOfHost.Attributes;
+using TownOfHost.Roles.Core;
+
 namespace TownOfHost
 {
     public static class CustomWinnerHolder
@@ -13,12 +16,13 @@ namespace TownOfHost
         // リザルトの表示に使用されます。
         public static HashSet<AdditionalWinners> AdditionalWinnerTeams;
         // 勝者の役職が格納され、この変数に格納されている役職のプレイヤーは全員勝利となります。
-        // チームとなる第三陣営の処理に最適です。
+        // チームとなるニュートラルの処理に最適です。
         public static HashSet<CustomRoles> WinnerRoles;
         // 勝者のPlayerIDが格納され、このIDを持つプレイヤーは全員勝利します。
-        // 単独勝利する第三陣営の処理に最適です。
+        // 単独勝利するニュートラルの処理に最適です。
         public static HashSet<byte> WinnerIds;
 
+        [GameModuleInitializer, PluginModuleInitializer]
         public static void Reset()
         {
             WinnerTeam = CustomWinner.Default;
