@@ -1,34 +1,38 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using HarmonyLib;
+using TownOfHost.Attributes;
 using static TownOfHost.Translator;
 namespace TownOfHost
 {
     public static class BanManager
     {
-        private static readonly string DENY_NAME_LIST_PATH = @"./RHR_DATA/DenyName.txt";
-        private static readonly string BAN_LIST_PATH = @"./RHR_DATA/BanList.txt";
+        private static readonly string DENY_NAME_LIST_PATH = @"./TOH_DATA/DenyName.txt";
+        private static readonly string BAN_LIST_PATH = @"./TOH_DATA/BanList.txt";
 
+        [PluginModuleInitializer]
         public static void Init()
         {
-            Directory.CreateDirectory("RHR_DATA");
+            Directory.CreateDirectory("TOH_DATA");
             if (!File.Exists(DENY_NAME_LIST_PATH)) File.Create(DENY_NAME_LIST_PATH).Close();
             if (!File.Exists(BAN_LIST_PATH)) File.Create(BAN_LIST_PATH).Close();
         }
         public static void AddBanPlayer(InnerNet.ClientData player)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
-            if (!CheckBanList(player))
+            if (!AmongUsClient.Instance.AmHost || player == null) return;
+            if (!CheckBanList(player) && player.FriendCode != "")
             {
                 File.AppendAllText(BAN_LIST_PATH, $"{player.FriendCode},{player.PlayerName}\n");
+                Logger.SendInGame(string.Format(GetString("Message.AddedPlayerToBanList"), player.PlayerName));
             }
         }
         public static void CheckDenyNamePlayer(InnerNet.ClientData player)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
+            if (!AmongUsClient.Instance.AmHost || !Options.ApplyDenyNameList.GetBool()) return;
             try
             {
-                Directory.CreateDirectory("RHR_DATA");//file make
+                Directory.CreateDirectory("TOH_DATA");
                 if (!File.Exists(DENY_NAME_LIST_PATH)) File.Create(DENY_NAME_LIST_PATH).Close();
                 using StreamReader sr = new(DENY_NAME_LIST_PATH);
                 string line;
@@ -51,7 +55,7 @@ namespace TownOfHost
         }
         public static void CheckBanPlayer(InnerNet.ClientData player)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
+            if (!AmongUsClient.Instance.AmHost || !Options.ApplyBanList.GetBool()) return;
             if (CheckBanList(player))
             {
                 AmongUsClient.Instance.KickPlayer(player.Id, true);
@@ -62,9 +66,10 @@ namespace TownOfHost
         }
         public static bool CheckBanList(InnerNet.ClientData player)
         {
+            if (player == null || player?.FriendCode == "") return false;
             try
             {
-                Directory.CreateDirectory("RHR_DATA");
+                Directory.CreateDirectory("TOH_DATA");
                 if (!File.Exists(BAN_LIST_PATH)) File.Create(BAN_LIST_PATH).Close();
                 using StreamReader sr = new(BAN_LIST_PATH);
                 string line;
@@ -80,6 +85,15 @@ namespace TownOfHost
             }
             return false;
         }
-
+    }
+    [HarmonyPatch(typeof(BanMenu), nameof(BanMenu.Select))]
+    class BanMenuSelectPatch
+    {
+        public static void Postfix(BanMenu __instance, int clientId)
+        {
+            InnerNet.ClientData recentClient = AmongUsClient.Instance.GetRecentClient(clientId);
+            if (recentClient == null) return;
+            if (!BanManager.CheckBanList(recentClient)) __instance.BanButton.GetComponent<ButtonRolloverHandler>().SetEnabledColors();
+        }
     }
 }

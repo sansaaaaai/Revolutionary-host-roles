@@ -1,9 +1,12 @@
 using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppSystem.Linq;
 using InnerNet;
 using Mathf = UnityEngine.Mathf;
+
+using TownOfHost.Roles.Core;
 
 namespace TownOfHost.Modules
 {
@@ -45,7 +48,7 @@ namespace TownOfHost.Modules
             else base.SendGameOptions();
         }
 
-        public override void SendOptionsArray(byte[] optionArray)
+        public override void SendOptionsArray(Il2CppStructArray<byte> optionArray)
         {
             for (byte i = 0; i < GameManager.Instance.LogicComponents.Count; i++)
             {
@@ -72,17 +75,16 @@ namespace TownOfHost.Modules
 
             var opt = BasedGameOptions;
             AURoleOptions.SetOpt(opt);
-            var state = Main.PlayerStates[player.PlayerId];
+            var state = PlayerState.GetByPlayerId(player.PlayerId);
             opt.BlackOut(state.IsBlackOut);
 
             CustomRoles role = player.GetCustomRole();
-            RoleType roleType = role.GetRoleType();
-            switch (roleType)
+            switch (role.GetCustomRoleTypes())
             {
-                case RoleType.Impostor:
+                case CustomRoleTypes.Impostor:
                     AURoleOptions.ShapeshifterCooldown = Options.DefaultShapeshiftCooldown.GetFloat();
                     break;
-                case RoleType.Madmate:
+                case CustomRoleTypes.Madmate:
                     AURoleOptions.EngineerCooldown = Options.MadmateVentCooldown.GetFloat();
                     AURoleOptions.EngineerInVentMaxTime = Options.MadmateVentMaxTime.GetFloat();
                     if (Options.MadmateHasImpostorVision.GetBool())
@@ -90,131 +92,34 @@ namespace TownOfHost.Modules
                     if (Options.MadmateCanSeeOtherVotes.GetBool())
                         opt.SetBool(BoolOptionNames.AnonymousVotes, false);
                     break;
-                default:
-                    if (player.Is(CustomRoles.JMadmate))
-                    {
-                        if (Options.MadmateCanSeeOtherVotes.GetBool())
-                            opt.SetBool(BoolOptionNames.AnonymousVotes, false);
-                        if (Options.MadmateHasImpostorVision.GetBool()) opt.SetVision(true);
-                    }
+            }
+
+            var roleClass = player.GetRoleClass();
+            roleClass?.ApplyGameOptions(opt);
+            foreach (var subRole in player.GetCustomSubRoles())
+            {
+                switch (subRole)
+                {
+                    case CustomRoles.Watcher:
+                        opt.SetBool(BoolOptionNames.AnonymousVotes, false);
                         break;
-            }
-
-            switch (player.GetCustomRole())
-            {
-                case CustomRoles.Terrorist:
-                    goto InfinityVent;
-                // case CustomRoles.ShapeMaster:
-                //     roleOpt.ShapeshifterCooldown = 0.1f;
-                //     roleOpt.ShapeshifterLeaveSkin = false;
-                //     roleOpt.ShapeshifterDuration = Options.ShapeMasterShapeshiftDuration.GetFloat();
-                //     break;
-                case CustomRoles.Warlock:
-                    AURoleOptions.ShapeshifterCooldown = Main.isCursed ? 1f : Options.DefaultKillCooldown;
-                    break;
-                case CustomRoles.SerialKiller:
-                    SerialKiller.ApplyGameOptions(player);
-                    break;
-                case CustomRoles.BountyHunter:
-                    BountyHunter.ApplyGameOptions();
-                    break;
-                case CustomRoles.JackalFellow:
-                    AURoleOptions.EngineerCooldown = Options.JackalFellowVentCooldown.GetFloat();
-                    Jackal.ApplyGameOptions(opt);
-                    opt.SetBool(BoolOptionNames.AnonymousVotes, Options.JackalFellowSpecial.GetValue() != 1);//falseで見える
-                    break;
-                case CustomRoles.Reloader:
-                    AURoleOptions.ShapeshifterCooldown = Reloader.ReloadCoolDown.GetFloat();
-                    AURoleOptions.ShapeshifterDuration = 1f;
-                    AURoleOptions.ShapeshifterLeaveSkin = false;
-                    break;
-                case CustomRoles.Tricker:
-                    AURoleOptions.ShapeshifterCooldown = Tricker.TrickCoolDown.GetFloat();
-                    AURoleOptions.ShapeshifterDuration = 1f;
-                    AURoleOptions.ShapeshifterLeaveSkin = false;
-                    break;
-                case CustomRoles.EvilWatcher:
-                case CustomRoles.NiceWatcher:
-                    opt.SetBool(BoolOptionNames.AnonymousVotes, false);
-                    break;
-                case CustomRoles.Sheriff:
-                case CustomRoles.Arsonist:
-                    opt.SetVision(false);
-                    break;
-                case CustomRoles.Lighter:
-                    if (player.GetPlayerTaskState().IsTaskFinished)
-                    {
-                        opt.SetFloat(
-                            FloatOptionNames.CrewLightMod,
-                            Options.LighterTaskCompletedVision.GetFloat());
-                        if (Utils.IsActive(SystemTypes.Electrical) && Options.LighterTaskCompletedDisableLightOut.GetBool())
-                        {
-                            opt.SetFloat(
-                            FloatOptionNames.CrewLightMod,
-                            opt.GetFloat(FloatOptionNames.CrewLightMod) * 5);
-                        }
-                    }
-                    break;
-                case CustomRoles.EgoSchrodingerCat:
-                    opt.SetVision(true);
-                    break;
-                case CustomRoles.Doctor:
-                    AURoleOptions.ScientistCooldown = 0f;
-                    AURoleOptions.ScientistBatteryCharge = Options.DoctorTaskCompletedBatteryCharge.GetFloat();
-                    break;
-                case CustomRoles.Mayor:
-                    AURoleOptions.EngineerCooldown =
-                        Main.MayorUsedButtonCount.TryGetValue(player.PlayerId, out var count) && count < Options.MayorNumOfUseButton.GetInt()
-                        ? opt.GetInt(Int32OptionNames.EmergencyCooldown)
-                        : 300f;
-                    AURoleOptions.EngineerInVentMaxTime = 1;
-                    break;
-                case CustomRoles.Mare:
-                    Mare.ApplyGameOptions(player.PlayerId);
-                    break;
-                case CustomRoles.EvilTracker:
-                    EvilTracker.ApplyGameOptions(player.PlayerId);
-                    break;
-                case CustomRoles.Jackal:
-                case CustomRoles.JSchrodingerCat:
-                    Jackal.ApplyGameOptions(opt);
-                    break;
-
-
-                InfinityVent:
-                    AURoleOptions.EngineerCooldown = 0;
-                    AURoleOptions.EngineerInVentMaxTime = 0;
-                    break;
-            }
-            if (Main.AllPlayerKillCooldown.ContainsKey(player.PlayerId))
-            {
-                foreach (var kc in Main.AllPlayerKillCooldown)
-                {
-                    if (kc.Key == player.PlayerId)
-                    {
-                        opt.SetFloat(
-                            FloatOptionNames.KillCooldown,
-                            kc.Value > 0 ? kc.Value : 0.01f);
-                    }
                 }
             }
-            if (Main.AllPlayerSpeed.ContainsKey(player.PlayerId))
+            if (Main.AllPlayerKillCooldown.TryGetValue(player.PlayerId, out var killCooldown))
             {
-                foreach (var speed in Main.AllPlayerSpeed)
-                {
-                    if (speed.Key == player.PlayerId)
-                    {
-                        opt.SetFloat(
-                            FloatOptionNames.PlayerSpeedMod,
-                            Mathf.Clamp(speed.Value, Main.MinSpeed, 3f));
-                    }
-                }
+                AURoleOptions.KillCooldown = Mathf.Max(0f, killCooldown);
             }
+
+            if (Main.AllPlayerSpeed.TryGetValue(player.PlayerId, out var speed))
+            {
+                AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, 3f);
+            }
+
             state.taskState.hasTasks = Utils.HasTasks(player.Data, false);
             if (Options.GhostCanSeeOtherVotes.GetBool() && player.Data.IsDead)
                 opt.SetBool(BoolOptionNames.AnonymousVotes, false);
             if (Options.AdditionalEmergencyCooldown.GetBool() &&
-                Options.AdditionalEmergencyCooldownThreshold.GetInt() <= Main.AllAlivePlayerControls.Count())
+                Options.AdditionalEmergencyCooldownThreshold.GetInt() <= Utils.AllAlivePlayersCount)
             {
                 opt.SetInt(
                     Int32OptionNames.EmergencyCooldown,
@@ -227,24 +132,12 @@ namespace TownOfHost.Modules
             if ((Options.CurrentGameMode == CustomGameMode.HideAndSeek || Options.IsStandardHAS) && Options.HideAndSeekKillDelayTimer > 0)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
-                if (player.GetCustomRole().IsImpostor() || player.Is(CustomRoles.Egoist))
+                if (player.Is(CountTypes.Impostor))
                 {
-                    opt.SetFloat(FloatOptionNames.PlayerSpeedMod, Main.MinSpeed);
+                    AURoleOptions.PlayerSpeedMod = Main.MinSpeed;
                 }
             }
-            opt.SetInt(Int32OptionNames.DiscussionTime, Mathf.Clamp(Main.DiscussionTime, 0, 300));
-
-            opt.SetInt(
-                Int32OptionNames.VotingTime,
-                Mathf.Clamp(Main.VotingTime, TimeThief.LowerLimitVotingTime.GetInt(), 300));
-
-            if (Options.AllAliveMeeting.GetBool() && GameData.Instance.AllPlayers.ToArray().Where(x => !x.Object.Is(CustomRoles.GM)).All(x => !x.IsDead))
-            {
-                opt.SetInt(Int32OptionNames.DiscussionTime, 0);
-                opt.SetInt(
-                Int32OptionNames.VotingTime,
-                Options.AllAliveMeetingTime.GetInt());
-            }
+            MeetingTimeManager.ApplyGameOptions(opt);
 
             AURoleOptions.ShapeshifterCooldown = Mathf.Max(1f, AURoleOptions.ShapeshifterCooldown);
             AURoleOptions.ProtectionDurationSeconds = 0f;

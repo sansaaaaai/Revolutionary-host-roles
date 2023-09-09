@@ -6,13 +6,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AmongUs.Data;
 using HarmonyLib;
+using TownOfHost.Attributes;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
 {
     public static class TemplateManager
     {
-        private static readonly string TEMPLATE_FILE_PATH = "./RHR_DATA/template.txt";
+        private static readonly string TEMPLATE_FILE_PATH = "./TOH_DATA/template.txt";
         private static Dictionary<string, Func<string>> _replaceDictionary = new()
         {
             ["RoomCode"] = () => InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId),
@@ -35,6 +36,7 @@ namespace TownOfHost
             ["Time"] = () => DateTime.Now.ToShortTimeString(),
         };
 
+        [PluginModuleInitializer]
         public static void Init()
         {
             CreateIfNotExists();
@@ -46,7 +48,7 @@ namespace TownOfHost
             {
                 try
                 {
-                    if (!Directory.Exists(@"RHR_DATA")) Directory.CreateDirectory(@"RHR_DATA");
+                    if (!Directory.Exists(@"TOH_DATA")) Directory.CreateDirectory(@"TOH_DATA");
                     if (File.Exists(@"./template.txt"))
                     {
                         File.Move(@"./template.txt", TEMPLATE_FILE_PATH);
@@ -69,7 +71,7 @@ namespace TownOfHost
             CreateIfNotExists();
             using StreamReader sr = new(TEMPLATE_FILE_PATH, Encoding.GetEncoding("UTF-8"));
             string text;
-            string[] tmp = { };
+            string[] tmp = Array.Empty<string>();
             List<string> sendList = new();
             HashSet<string> tags = new();
             while ((text = sr.ReadLine()) != null)

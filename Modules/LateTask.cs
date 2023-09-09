@@ -6,7 +6,6 @@ namespace TownOfHost
     {
         public string name;
         public float timer;
-        public bool IsLog;
         public Action action;
         public static List<LateTask> Tasks = new();
         public bool Run(float deltaTime)
@@ -19,15 +18,14 @@ namespace TownOfHost
             }
             return false;
         }
-        public LateTask(Action action, float time, string name = "No Name Task", bool IsLog = true)
+        public LateTask(Action action, float time, string name = "No Name Task")
         {
             this.action = action;
             this.timer = time;
             this.name = name;
-            this.IsLog = IsLog;
             Tasks.Add(this);
-            if (IsLog)
-            Logger.Info("\"" + name + "\" is created", "LateTask");
+            if (name != "")
+                Logger.Info("\"" + name + "\" is created", "LateTask");
         }
         public static void Update(float deltaTime)
         {
@@ -39,8 +37,8 @@ namespace TownOfHost
                 {
                     if (task.Run(deltaTime))
                     {
-                        if (task.IsLog)
-                        Logger.Info($"\"{task.name}\" is finished", "LateTask");
+                        if (task.name != "")
+                            Logger.Info($"\"{task.name}\" is finished", "LateTask");
                         TasksToRemove.Add(task);
                     }
                 }
