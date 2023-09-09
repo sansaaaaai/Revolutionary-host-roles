@@ -5,32 +5,34 @@ using System.Reflection;
 using AmongUs.GameOptions;
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.IL2CPP;
+using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
-using UnhollowerRuntimeLib;
+using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
+
+using TownOfHost.Attributes;
+using TownOfHost.Roles.Core;
 
 [assembly: AssemblyFileVersionAttribute(TownOfHost.Main.PluginVersion)]
 [assembly: AssemblyInformationalVersionAttribute(TownOfHost.Main.PluginVersion)]
 namespace TownOfHost
 {
-    [BepInPlugin(PluginGuid, "RevolutionaryHostRoles", PluginVersion)]
+    [BepInPlugin(PluginGuid, "Town Of Host", PluginVersion)]
     [BepInIncompatibility("jp.ykundesu.supernewroles")]
     [BepInProcess("Among Us.exe")]
     public class Main : BasePlugin
     {
         // == プログラム設定 / Program Config ==
         // modの名前 / Mod Name (Default: Town Of Host)
-        public static readonly string ModName = "RevolutionaryHostRoles";
-        public static readonly string ModNameInAir = "Revolutionary Host Roles";
+        public static readonly string ModName = "Town Of Host";
         // modの色 / Mod Color (Default: #00bfff)
-        public static readonly string ModColor = "#00ff00";
+        public static readonly string ModColor = "#7FFF00";
         // 公開ルームを許可する / Allow Public Room (Default: true)
-        public static readonly bool AllowPublicRoom = true;
+        public static readonly bool AllowPublicRoom = false;
         // フォークID / ForkId (Default: OriginalTOH)
-        public static readonly string ForkId = "RHR";
+        public static readonly string ForkId = "OriginalTOH";
         // Discordボタンを表示するか / Show Discord Button (Default: true)
-        public static readonly bool ShowDiscordButton = false;
+        public static readonly bool ShowDiscordButton = true;
         // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/W5ug6hXB9V)
         public static readonly string DiscordInviteUrl = "https://discord.gg/W5ug6hXB9V";
         // ==========
@@ -47,8 +49,10 @@ namespace TownOfHost
 
         // ==========
         //Sorry for many Japanese comments.
-        public const string PluginGuid = "com.sansaaaai.revolutinoaryhostroles";
-        public const string PluginVersion = "4.0.2";
+        public const string PluginGuid = "com.emptybottle.townofhost";
+        public const string PluginVersion = "5.1.1";
+        // サポートされている最低のAmongUsバージョン
+        public static readonly string LowestSupportedVersion = "2023.7.11";
         public Harmony Harmony { get; } = new Harmony(PluginGuid);
         public static Version version = Version.Parse(PluginVersion);
         public static BepInEx.Logging.ManualLogSource Logger;
@@ -59,8 +63,6 @@ namespace TownOfHost
         public static NormalGameOptionsV07 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
         public static HideNSeekGameOptionsV07 HideNSeekSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
         //Client Options
-
-        public static ConfigEntry<bool> ChangeRoleButtonImage { get; private set; }
         public static ConfigEntry<string> HideName { get; private set; }
         public static ConfigEntry<string> HideColor { get; private set; }
         public static ConfigEntry<bool> ForceJapanese { get; private set; }
@@ -80,14 +82,11 @@ namespace TownOfHost
         public static ConfigEntry<float> LastKillCooldown { get; private set; }
         public static ConfigEntry<float> LastShapeshifterCooldown { get; private set; }
         public static OptionBackupData RealOptionsData;
-        public static Dictionary<byte, PlayerState> PlayerStates = new();
         public static Dictionary<byte, string> AllPlayerNames;
         public static Dictionary<(byte, byte), string> LastNotifyNames;
         public static Dictionary<byte, Color32> PlayerColors = new();
-        public static Dictionary<byte, PlayerState.DeathReason> AfterMeetingDeathPlayers = new();
-        public static Dictionary<CustomRoles, String> roleColors;
-        public static bool IsFixedCooldown => CustomRoles.Vampire.IsEnable();
-        public static float RefixCooldownDelay = 0f;
+        public static Dictionary<byte, CustomDeathReason> AfterMeetingDeathPlayers = new();
+        public static Dictionary<CustomRoles, string> roleColors;
         public static List<byte> ResetCamPlayerList;
         public static List<byte> winnerList;
         public static List<int> clientIdList;
@@ -95,7 +94,6 @@ namespace TownOfHost
         public static bool isChatCommand = false;
         public static List<PlayerControl> LoversPlayers = new();
         public static bool isLoversDead = true;
-        public static List<PlayerControl> Addons = new();
         public static Dictionary<byte, float> AllPlayerKillCooldown = new();
 
         /// <summary>
@@ -103,34 +101,18 @@ namespace TownOfHost
         /// </summary>
         public static Dictionary<byte, float> AllPlayerSpeed = new();
         public const float MinSpeed = 0.0001f;
-        public static Dictionary<byte, (byte, float)> BitPlayers = new();
-        public static Dictionary<byte, float> WarlockTimer = new();
-        public static Dictionary<byte, PlayerControl> CursedPlayers = new();
-        public static Dictionary<byte, bool> isCurseAndKill = new();
-        public static Dictionary<(byte, byte), bool> isDoused = new();
-        public static Dictionary<byte, (PlayerControl, float)> ArsonistTimer = new();
-        /// <summary>
-        /// Key: ターゲットのPlayerId, Value: パペッティアのPlayerId
-        /// </summary>
-        public static Dictionary<byte, byte> PuppeteerList = new();
-        public static Dictionary<byte, byte> SpeedBoostTarget = new();
-        public static Dictionary<byte, int> MayorUsedButtonCount = new();
         public static int AliveImpostorCount;
         public static int SKMadmateNowCount;
-        public static bool isCursed;
         public static Dictionary<byte, bool> CheckShapeshift = new();
         public static Dictionary<byte, byte> ShapeshiftTarget = new();
-        public static Dictionary<(byte, byte), string> targetArrows = new();
         public static bool VisibleTasksCount;
         public static string nickName = "";
         public static bool introDestroyed = false;
-        public static int DiscussionTime;
-        public static int VotingTime;
-        public static byte currentDousingTarget;
         public static float DefaultCrewmateVision;
         public static float DefaultImpostorVision;
         public static bool IsChristmas = DateTime.Now.Month == 12 && DateTime.Now.Day is 24 or 25;
         public static bool IsInitialRelease = DateTime.Now.Month == 12 && DateTime.Now.Day is 4;
+        public const float RoleTextSize = 2f;
 
         public static IEnumerable<PlayerControl> AllPlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null);
         public static IEnumerable<PlayerControl> AllAlivePlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null && p.IsAlive());
@@ -147,9 +129,8 @@ namespace TownOfHost
             ForceJapanese = Config.Bind("Client Options", "Force Japanese", false);
             JapaneseRoleName = Config.Bind("Client Options", "Japanese Role Name", true);
             DebugKeyInput = Config.Bind("Authentication", "Debug Key", "");
-            ChangeRoleButtonImage = Config.Bind("Client Options", "ChangeRoleButtonImage", false);
 
-            Logger = BepInEx.Logging.Logger.CreateLogSource("Revolutionary-Host-Roles");
+            Logger = BepInEx.Logging.Logger.CreateLogSource("TownOfHost");
             TownOfHost.Logger.Enable();
             TownOfHost.Logger.Disable("NotifyRoles");
             TownOfHost.Logger.Disable("SendRPC");
@@ -164,16 +145,9 @@ namespace TownOfHost
             // 認証関連-認証
             DebugModeManager.Auth(DebugKeyAuth, DebugKeyInput.Value);
 
-            BitPlayers = new Dictionary<byte, (byte, float)>();
-            WarlockTimer = new Dictionary<byte, float>();
-            CursedPlayers = new Dictionary<byte, PlayerControl>();
-            isDoused = new Dictionary<(byte, byte), bool>();
-            ArsonistTimer = new Dictionary<byte, (PlayerControl, float)>();
-            MayorUsedButtonCount = new Dictionary<byte, int>();
             winnerList = new();
             VisibleTasksCount = false;
             MessagesToSend = new List<(string, byte, string)>();
-            currentDousingTarget = 255;
 
             Preset1 = Config.Bind("Preset Name Options", "Preset1", "Preset_1");
             Preset2 = Config.Bind("Preset Name Options", "Preset2", "Preset_2");
@@ -186,12 +160,8 @@ namespace TownOfHost
             LastKillCooldown = Config.Bind("Other", "LastKillCooldown", (float)30);
             LastShapeshifterCooldown = Config.Bind("Other", "LastShapeshifterCooldown", (float)30);
 
-            NameColorManager.Begin();
-            CustomWinnerHolder.Reset();
-            Translator.Init();
-            BanManager.Init();
-            TemplateManager.Init();
-            
+            PluginModuleInitializerAttribute.InitializeAll();
+
             IRandom.SetInstance(new NetRandomWrapper());
 
             hasArgumentException = false;
@@ -201,69 +171,31 @@ namespace TownOfHost
 
                 roleColors = new Dictionary<CustomRoles, string>()
                 {
-                    //バニラ役職
-                    {CustomRoles.Crewmate, "#ffffff"},
-                    {CustomRoles.Engineer, "#8cffff"},
-                    {CustomRoles.Scientist, "#8cffff"},
-                    {CustomRoles.GuardianAngel, "#ffffff"},
-                    //インポスター、シェイプシフター
-                    //特殊インポスター役職
-                    //マッドメイト系役職
-                        //後で追加
-                    //両陣営可能役職
-                    {CustomRoles.Watcher, "#800080"},
+                    // マッドメイト役職
+                    {CustomRoles.SKMadmate, "#ff1919"},
                     //特殊クルー役職
-                    {CustomRoles.NiceWatcher, "#800080"}, //ウォッチャーの派生
-                    {CustomRoles.Bait, "#00f7ff"},
-                    {CustomRoles.SabotageMaster, "#0000ff"},
-                    {CustomRoles.Snitch, "#b8fb4f"},
-                    {CustomRoles.Mayor, "#204d42"},
-                    {CustomRoles.Sheriff, "#f8cd46"},
-                    {CustomRoles.Lighter, "#eee5be"},
-                    {CustomRoles.SpeedBooster, "#00ffff"},
-                    {CustomRoles.Doctor, "#80ffdd"},
-                    {CustomRoles.Trapper, "#5a8fd0"},
-                    {CustomRoles.Dictator, "#df9b00"},
-                    {CustomRoles.CSchrodingerCat, "#ffffff"}, //シュレディンガーの猫の派生
-                    {CustomRoles.Seer, "#61b26c"},
-                    {CustomRoles.InSender, "#ffff00"},
-                    //第三陣営役職
-                    {CustomRoles.Arsonist, "#ff6633"},
-                    {CustomRoles.Jester, "#ec62a5"},
-                    {CustomRoles.Terrorist, "#00ff00"},
-                    {CustomRoles.Executioner, "#611c3a"},
-                    {CustomRoles.Opportunist, "#00ff00"},
-                    {CustomRoles.SchrodingerCat, "#696969"},
-                    {CustomRoles.Egoist, "#5600ff"},
-                    {CustomRoles.EgoSchrodingerCat, "#5600ff"},
-                    {CustomRoles.Jackal, "#00b4eb"},
-                    {CustomRoles.JSchrodingerCat, "#00b4eb"},
-                    {CustomRoles.JackalFellow, "#00b4eb"},
                     //HideAndSeek
                     {CustomRoles.HASFox, "#e478ff"},
                     {CustomRoles.HASTroll, "#00ff00"},
                     // GM
                     {CustomRoles.GM, "#ff5b70"},
                     //サブ役職
-                    {CustomRoles.LastImpostor, "#ff0000"},
+                    {CustomRoles.LastImpostor, "#ff1919"},
                     {CustomRoles.Lovers, "#ff6be4"},
-                    {CustomRoles.AntiTeleporter, "#ff0000"},
+                    {CustomRoles.Watcher, "#800080"},
+                    {CustomRoles.Workhorse, "#00ffff"},
+
                     {CustomRoles.NotAssigned, "#ffffff"}
                 };
-                foreach (var role in Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>())
-                {
-                    switch (role.GetRoleType())
-                    {
-                        case RoleType.Impostor:
-                            roleColors.TryAdd(role, "#ff0000");
-                            break;
-                        case RoleType.Madmate:
-                            roleColors.TryAdd(role, "#ff0000");
-                            break;
-                        default:
-                            break;
-                    }
-                }
+
+                var type = typeof(RoleBase);
+                var roleClassArray =
+                CustomRoleManager.AllRolesClassType = Assembly.GetAssembly(type)
+                    .GetTypes()
+                    .Where(x => x.IsSubclassOf(type)).ToArray();
+
+                foreach (var roleClassType in roleClassArray)
+                    roleClassType.GetField("RoleInfo")?.GetValue(type);
             }
             catch (ArgumentException ex)
             {
@@ -275,93 +207,38 @@ namespace TownOfHost
             }
             TownOfHost.Logger.Info($"{Application.version}", "AmongUs Version");
 
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.Branch)}: {ThisAssembly.Git.Branch}", "GitVersion");
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.BaseTag)}: {ThisAssembly.Git.BaseTag}", "GitVersion");
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.Commit)}: {ThisAssembly.Git.Commit}", "GitVersion");
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.Commits)}: {ThisAssembly.Git.Commits}", "GitVersion");
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.IsDirty)}: {ThisAssembly.Git.IsDirty}", "GitVersion");
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.Sha)}: {ThisAssembly.Git.Sha}", "GitVersion");
-            TownOfHost.Logger.Info($"{nameof(ThisAssembly.Git.Tag)}: {ThisAssembly.Git.Tag}", "GitVersion");
+            var handler = TownOfHost.Logger.Handler("GitVersion");
+            handler.Info($"{nameof(ThisAssembly.Git.Branch)}: {ThisAssembly.Git.Branch}");
+            handler.Info($"{nameof(ThisAssembly.Git.BaseTag)}: {ThisAssembly.Git.BaseTag}");
+            handler.Info($"{nameof(ThisAssembly.Git.Commit)}: {ThisAssembly.Git.Commit}");
+            handler.Info($"{nameof(ThisAssembly.Git.Commits)}: {ThisAssembly.Git.Commits}");
+            handler.Info($"{nameof(ThisAssembly.Git.IsDirty)}: {ThisAssembly.Git.IsDirty}");
+            handler.Info($"{nameof(ThisAssembly.Git.Sha)}: {ThisAssembly.Git.Sha}");
+            handler.Info($"{nameof(ThisAssembly.Git.Tag)}: {ThisAssembly.Git.Tag}");
 
             ClassInjector.RegisterTypeInIl2Cpp<ErrorText>();
 
             Harmony.PatchAll();
         }
     }
-    public enum CustomRoles
+    public enum CustomDeathReason
     {
-        //Default
-        Crewmate = 0,
-        //Impostor(Vanilla)
-        Impostor,
-        Shapeshifter,
-        //Impostor
-        BountyHunter,
-        EvilWatcher,
-        FireWorks,
-        Mafia,
-        SerialKiller,
-        //ShapeMaster,
-        Sniper,
-        Vampire,
-        Witch,
-        Warlock,
-        Mare,
-        Puppeteer,
-        TimeThief,
-        EvilTracker,
-        Reloader,
-        Tricker,
-        //Madmate
-        MadGuardian,
-        Madmate,
-        MadSnitch,
-        SKMadmate,
-        MSchrodingerCat,//インポスター陣営のシュレディンガーの猫
-        //両陣営
-        Watcher,
-        //Crewmate(Vanilla)
-        Engineer,
-        GuardianAngel,
-        Scientist,
-        //Crewmate
-        Bait,
-        Lighter,
-        Mayor,
-        NiceWatcher,
-        SabotageMaster,
-        Sheriff,
-        Snitch,
-        SpeedBooster,
-        Trapper,
-        Dictator,
-        Doctor,
-        Seer,
-        InSender,
-        CSchrodingerCat,//クルー陣営のシュレディンガーの猫
-        //Neutral
-        Arsonist,
-        Egoist,
-        EgoSchrodingerCat,//エゴイスト陣営のシュレディンガーの猫
-        Jester,
-        Opportunist,
-        SchrodingerCat,//第三陣営のシュレディンガーの猫
-        Terrorist,
-        Executioner,
-        Jackal,
-        JSchrodingerCat,//ジャッカル陣営のシュレディンガーの猫
-        JackalFellow,
-        //HideAndSeek
-        HASFox,
-        HASTroll,
-        //GM
-        GM,
-        // Sub-roll after 500
-        NotAssigned = 500,
-        LastImpostor = 501,
-        Lovers = 502,
-        JMadmate = 503,//重複マッドメイト
-        AntiTeleporter
+        Kill,
+        Vote,
+        Suicide,
+        Spell,
+        FollowingSuicide,
+        Bite,
+        Bombed,
+        Misfire,
+        Torched,
+        Sniped,
+        Revenge,
+        Execution,
+        Infected,
+        Disconnected,
+        Fall,
+        etc = -1
     }
     //WinData
     public enum CustomWinner
@@ -378,6 +255,7 @@ namespace TownOfHost
         Arsonist = CustomRoles.Arsonist,
         Egoist = CustomRoles.Egoist,
         Jackal = CustomRoles.Jackal,
+        PlagueDoctor = CustomRoles.PlagueDoctor,
         HASTroll = CustomRoles.HASTroll,
     }
     public enum AdditionalWinners
@@ -386,7 +264,6 @@ namespace TownOfHost
         Opportunist = CustomRoles.Opportunist,
         SchrodingerCat = CustomRoles.SchrodingerCat,
         Executioner = CustomRoles.Executioner,
-        JackalFellow = CustomRoles.JackalFellow,
         HASFox = CustomRoles.HASFox,
     }
     /*public enum CustomRoles : byte
@@ -398,13 +275,11 @@ namespace TownOfHost
     public enum SuffixModes
     {
         None = 0,
-        RHR,
+        TOH,
         Streaming,
         Recording,
         RoomHost,
-        OriginalName,
-        HostGM,
-        GMSetting,
+        OriginalName
     }
     public enum VoteMode
     {
