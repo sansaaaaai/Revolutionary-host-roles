@@ -1,4 +1,4 @@
-# Town Of Host
+# Revolutionary Host Roles
 
 この README は英語版です。<br>
 ! We are not good at English, so if you have difficulty in making out the translation, please translate the Japanese README into English. !<br>
